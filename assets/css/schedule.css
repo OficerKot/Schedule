@@ -1,0 +1,11 @@
+.scheduleContainer {
+	display: flex;
+	flex-direction: row;
+	gap: 4px;
+}
+
+.dayColumn {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
