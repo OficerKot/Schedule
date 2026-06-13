@@ -1,5 +1,4 @@
-/** Тип аудитории */
-enum ClassroomType {
+﻿export enum ClassroomType {
   LECTURE = "лекционная",
   COMPUTER = "компьютерный класс",
   LAB = "лаборатория",
@@ -10,7 +9,7 @@ enum ClassroomType {
 export class Classroom {
   constructor(
     public readonly building: string,
-    public readonly classroomNumber: number,
+    public readonly classroomNumber: string,
     public readonly seats: number,
     public readonly type: ClassroomType,
   ) {}
