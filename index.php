@@ -10,6 +10,11 @@
 
 <body>
 	<h1>Расписание занятий</h1>
+
+	<!-- Контейнер с учебными днями (пн-сб) -->
+	<div id="scheduleContainer" class="scheduleContainer">
+
+	</div>
 </body>
 
 </html>
