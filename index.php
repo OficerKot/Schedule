@@ -9,7 +9,7 @@
 	<title>Расписание</title>
 </head>
 
-<header>header</header>
+<?php include "includes/header.php";?>
 
 <body>
 	<h1>Расписание занятий</h1>

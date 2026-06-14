@@ -1,5 +1,10 @@
 ﻿import { formatDateShort } from "../../helpers/formatDate.js";
+import { Lesson, LessonType } from "../model/Lesson.js";
+import { Teacher } from "../model/Teacher.js";
+import { Classroom, ClassroomType } from "../model/Classroom.js";
+import { Group } from "../model/Group.js";
 import { StudyDay } from "../model/StudyDay.js";
+import { LessonCard } from "./LessonCard.js";
 
 /** Отрисовка колонки учебного дня */
 export function createStudyDay(
@@ -14,6 +19,12 @@ export function createStudyDay(
 
   const cardsContainer = document.createElement("div");
   cardsContainer.classList.add("cardsContainer");
+
+  //Это для проверки карточек, потом убрать!!
+  studyDay.lessons.forEach((lesson) => {
+    cardsContainer.appendChild(addLessonCard(lesson));
+  });
+
   dayElem.appendChild(cardsContainer);
 
   const container = document.getElementById(containerId);
@@ -31,6 +42,7 @@ function createDateContainer(date: Date): HTMLDivElement {
 }
 
 /** Добавление карточки в учебный день */
-function addLessonCard(): void {
-  // TODO: реализовать добавление карточки занятия
+function addLessonCard(lesson: Lesson): HTMLDivElement {
+  const cardElem = new LessonCard(lesson);
+  return cardElem.getDivElement();
 }
