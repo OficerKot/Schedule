@@ -1,0 +1,13 @@
+{
+  "name": "schedule",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Schedule project with TypeScript sources compiled to browser-ready JavaScript.",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
