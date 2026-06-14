@@ -9,8 +9,15 @@
 	<title>Расписание</title>
 </head>
 
+<header>header</header>
+
 <body>
 	<h1>Расписание занятий</h1>
+
+	<!-- Контейнер с кнопками управления -->
+	<div class="navButtonsContainer">
+		<?php include "includes/weekNavButtons.php"; ?>
+	</div>
 
 	<!-- Контейнер с учебными днями (пн-сб) -->
 	<div id="scheduleContainer" class="scheduleContainer">

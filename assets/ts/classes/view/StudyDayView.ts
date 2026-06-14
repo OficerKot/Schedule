@@ -2,7 +2,10 @@
 import { StudyDay } from "../model/StudyDay.js";
 
 /** Отрисовка колонки учебного дня */
-export function createStudyDay(studyDay: StudyDay, containerId: string): void {
+export function createStudyDay(
+  studyDay: StudyDay,
+  containerId: string,
+): HTMLDivElement {
   const dayElem = document.createElement("div");
   dayElem.classList.add("dayColumn");
 
@@ -15,9 +18,11 @@ export function createStudyDay(studyDay: StudyDay, containerId: string): void {
 
   const container = document.getElementById(containerId);
   container?.appendChild(dayElem);
+
+  return dayElem;
 }
 
-/** Преобразует дату в день месяца и день недели, возвращает div с этими данными */
+/** Возвращает контейнер с преобразованной (день_недели, день.месяц) датой */
 function createDateContainer(date: Date): HTMLDivElement {
   const dateElem = document.createElement("div");
   dateElem.classList.add("dateContainer");
