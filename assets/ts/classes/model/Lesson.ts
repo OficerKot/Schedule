@@ -1,14 +1,14 @@
 ﻿import { Teacher } from "./Teacher.js";
-import { Classroom } from "./Classroom.js";
+import { Classroom, ClassroomType } from "./Classroom.js";
 import { Group } from "./Group.js";
 
 /** Тип занятия */
 export enum LessonType {
-  LECTION = "лекция",
-  PRACTICE = "практика",
-  LAB = "лабораторные работы",
-  CREDIT = "зачёт",
-  EXAM = "экзамен",
+  LECTION = "Лекция",
+  PRACTICE = "Практика",
+  LAB = "Лабораторные работы",
+  CREDIT = "Зачёт",
+  EXAM = "Экзамен",
 }
 
 /** Хранит информацию об одном учебном занятии */
@@ -30,3 +30,40 @@ export class Lesson {
     );
   }
 }
+
+//Для проверки отображения карточек. Потом удалить
+export const testLesson1: Lesson = new Lesson(
+  "Аналитическая геометрия и компьютерная графика",
+  1,
+  LessonType.LECTION,
+  new Teacher(
+    101,
+    "Ирина",
+    "Алексеевна",
+    "Курочкина",
+    "ИМКТ",
+    "position",
+    "kafedra",
+    "Департамент математического и компьютерного моделирования",
+  ),
+  new Classroom("D", "738", 150, ClassroomType.LECTURE),
+  new Group("Б9124-09.03.03 пикд", 28),
+);
+
+export const testLesson2: Lesson = new Lesson(
+  "Математический анализ",
+  1,
+  LessonType.LECTION,
+  new Teacher(
+    102,
+    "Юрий",
+    "Александрович",
+    "Клевчихин",
+    "ИМКТ",
+    "position",
+    "kafedra",
+    "Департамент математики",
+  ),
+  new Classroom("D", "738", 150, ClassroomType.LECTURE),
+  new Group("Б9124-09.03.03 пикд", 28),
+);

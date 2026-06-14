@@ -2,6 +2,7 @@
 
 import { WEEK_LENGTH, WORK_DAYS_CNT } from "../constants.js";
 import { getMonday } from "../helpers/formatDate.js";
+import { testLesson1, testLesson2 } from "./model/Lesson.js";
 import { StudyDay } from "./model/StudyDay.js";
 import { createStudyDay } from "./view/StudyDayView.js";
 
@@ -36,8 +37,8 @@ export class ScheduleViewModel {
   private showWeek() {
     const curDate = getMonday(this.curWeekDate);
     for (let i = 0; i < WORK_DAYS_CNT; i++) {
-      //Нужно, чтобы день (где-то) заполнялся данными из бд
-      const testDay = new StudyDay([], curDate);
+      //TODO: Нужно, чтобы день (где-то) заполнялся данными из бд
+      const testDay = new StudyDay([testLesson1, testLesson2], curDate);
 
       this.dayElements.push(createStudyDay(testDay, "scheduleContainer"));
       curDate.setDate(curDate.getDate() + 1);
