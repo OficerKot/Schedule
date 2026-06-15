@@ -1,5 +1,5 @@
 ﻿import { StudyDay } from "./classes/model/StudyDay.js";
-import { ScheduleViewModel } from "./classes/ScheduleViewModel.js";
+import { ScheduleViewModel } from "./classes/viewmodel/ScheduleViewModel.js";
 import { createStudyDay } from "./classes/view/StudyDayView.js";
 import { getMonday } from "./helpers/formatDate.js";
 
