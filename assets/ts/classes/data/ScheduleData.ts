@@ -14,12 +14,15 @@ export class ScheduleData {
   private teachers: Teacher[] = [];
   private classrooms: Classroom[] = [];
 
-  //Запрос на получение всего списка учителей
-  getTeachersData() {}
+  //Тут без фильтров, получаем все данные
+  getTeachersData(): Teacher[] {
+    return [];
+  }
 
   getGroupsData() {}
 
   getClassroomsData() {}
+  //-------------------------------------
 
   getStudyDays(filters: FiltrationState): StudyDay[] {
     //Отправляет SQL запрос с учётом фильтров

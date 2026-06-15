@@ -15,46 +15,50 @@ export class ScheduleViewModel {
   private curWeekDate: Date = new Date();
   private dayElements: HTMLElement[] = [];
   private filters: FiltrationState = new FiltrationState();
-  private data: ScheduleData = new ScheduleData();
+  constructor(private data: ScheduleData) {}
 
   onTeacherFilterSelect(teacher: Teacher | null) {
     this.filters.teacher = teacher;
+    console.log("selected" + teacher);
+    this.update();
   }
   onGroupFilterSelect(group: Group | null) {
     this.filters.group = group;
+    this.update();
   }
   onClassroomFilterSelect(classroom: Classroom | null) {
     this.filters.classroom = classroom;
+    this.update();
   }
 
   //**Отобразить следующую неделю */
   showNextWeek() {
     this.curWeekDate.setDate(this.curWeekDate.getDate() + WEEK_LENGTH);
-    this.clearWeek();
-    this.showWeek();
+    this.update();
   }
 
   //**Отобразить предыдущую неделю */
   showPrevWeek() {
     this.curWeekDate.setDate(this.curWeekDate.getDate() - WEEK_LENGTH);
-    this.clearWeek();
-    this.showWeek();
+    this.update();
   }
 
   //**Отобразить текущую неделю */
   showCurWeek() {
     this.curWeekDate = new Date();
-    this.clearWeek();
-    this.showWeek();
+    this.update();
   }
 
-  //**Отобразить расписание на неделю curWeekDate*/
+  //**Отрисовка расписания*/
   private showWeek() {
     const studyDays = this.data.getStudyDays(this.filters);
     const curDate = getMonday(this.curWeekDate);
 
     for (let i = 0; i < WORK_DAYS_CNT; i++) {
-      let day = studyDays.find((d) => d.date.getDate() == curDate.getDate());
+      let day = studyDays.find(
+        (d) => d.date.toDateString() == curDate.toDateString(),
+      );
+
       if (!day) {
         day = new StudyDay([], curDate);
       }
@@ -63,11 +67,18 @@ export class ScheduleViewModel {
       curDate.setDate(curDate.getDate() + 1);
     }
   }
+
   //**Очистка расписания перед отрисовкой новых столбцов */
   private clearWeek() {
     this.dayElements.forEach((element) => {
       element.remove();
     });
     this.dayElements = [];
+  }
+
+  //**Обновить данные и неделю */
+  private update() {
+    this.clearWeek();
+    this.showWeek();
   }
 }
