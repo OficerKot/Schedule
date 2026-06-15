@@ -16,6 +16,7 @@
 
 	<!-- Контейнер с кнопками управления -->
 	<div class="navButtonsContainer">
+		<?php include "includes/filterButtons.php"; ?>
 		<?php include "includes/weekNavButtons.php"; ?>
 	</div>
 
