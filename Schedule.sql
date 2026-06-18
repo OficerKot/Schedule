@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3307
--- Время создания: Июн 18 2026 г., 07:56
+-- Время создания: Июн 18 2026 г., 08:23
 -- Версия сервера: 8.0.30
 -- Версия PHP: 7.2.34
 
@@ -56,7 +56,7 @@ CREATE TABLE `building_distances` (
   `from_building` varchar(50) NOT NULL,
   `to_building` varchar(50) NOT NULL,
   `walk_minutes` tinyint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Дамп данных таблицы `building_distances`
