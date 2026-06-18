@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-$pdo = new PDO("mysql:host=127.0.0.1;port=3307;dbname=Schedule;charset=utf8mb4", 'root', '');
+$pdo = new PDO("mysql:host=127.0.0.1;port=3306;dbname=Schedule;charset=utf8mb4", 'root', '');
 
 echo "<h3>rooms table:</h3>";
 $rows = $pdo->query("SELECT * FROM rooms ORDER BY building, room_number")->fetchAll(PDO::FETCH_ASSOC);
