@@ -40,9 +40,15 @@ export class ScheduleViewModel {
     await this.showWeek();
   }
 
-  //**Отобразить текущую неделю */
+  //**Отобразить текущую неделю (реальная дата) */
   async showCurWeek() {
     this.curWeekDate = new Date();
+    this.clearWeek();
+    await this.showWeek();
+  }
+
+  //**Отобразить неделю по сохранённой дате */
+  async showCurrentSavedWeek() {
     this.clearWeek();
     await this.showWeek();
   }
@@ -50,19 +56,14 @@ export class ScheduleViewModel {
   //**Отобразить расписание на неделю curWeekDate*/
   private async showWeek() {
     const curDate = getMonday(this.curWeekDate);
-    console.log('showWeek: curDate =', curDate.toISOString());
     const studyDays = await this.data.getStudyDays(this.filters, curDate);
-    console.log('showWeek: studyDays count =', studyDays.length);
-    studyDays.forEach((d, i) => console.log(`  day ${i}: date =`, d.date, 'lessons =', d.lessons.length));
 
     for (let i = 0; i < WORK_DAYS_CNT; i++) {
-      const dateStr = curDate.toISOString().split('T')[0]; // YYYY-MM-DD
-      console.log('  loop i=', i, 'dateStr=', dateStr);
+      const dateStr = curDate.toISOString().split('T')[0];
       let day = studyDays.find((d) => {
         const dStr = d.date instanceof Date ? d.date.toISOString().split('T')[0] : String(d.date);
         return dStr === dateStr;
       });
-      console.log('  found day =', !!day);
       if (!day) {
         day = new StudyDay([], curDate);
       }

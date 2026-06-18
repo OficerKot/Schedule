@@ -66,7 +66,7 @@ function getTeachers(PDO $pdo): array {
 function getGroups(PDO $pdo): array {
     $stmt = $pdo->query("
         SELECT group_id, name, students_count
-        FROM groups
+        FROM `groups`
         ORDER BY name
     ");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -95,7 +95,7 @@ function getSchedule(PDO $pdo, array $params): array {
     // Фильтры
     $teacherId = $params['teacher'] ?? null;
     $groupId   = $params['group'] ?? null;
-    $roomId    = $params['classroom'] ?? null;
+    $classroomKey = $params['classroom'] ?? null;
 
     // Определяем чётность текущей недели
     $mondayTimestamp = $monday->getTimestamp();
@@ -104,23 +104,32 @@ function getSchedule(PDO $pdo, array $params): array {
     $isEven = ($weekNumber % 2 === 0);
 
     // Строим WHERE
-    $where = ["semester_date >= ? AND semester_date < ?"];
+    $where = ["lc.semester_date >= ? AND lc.semester_date < ?"];
     $values = [
         $monday->format('Y-m-d'),
         (clone $monday)->modify('+7 days')->format('Y-m-d')
     ];
 
     if ($teacherId) {
-        $where[] = "teacher_id = ?";
+        $where[] = "lc.teacher_id = ?";
         $values[] = (int)$teacherId;
     }
     if ($groupId) {
-        $where[] = "group_id = ?";
+        $where[] = "lc.group_id = ?";
         $values[] = (int)$groupId;
     }
-    if ($roomId) {
-        $where[] = "room_id = ?";
-        $values[] = (int)$roomId;
+    if ($classroomKey) {
+        // Разбираем "Д303" → building="Д", room_number="303"
+        $parts = preg_split('/(\d+)/', $classroomKey, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        if (!empty($parts)) {
+            $bld = $parts[0];
+            $num = isset($parts[1]) ? $parts[1] : '';
+            if ($bld && $num) {
+                $where[] = "r.building = ? AND r.room_number = ?";
+                $values[] = $bld;
+                $values[] = $num;
+            }
+        }
     }
 
     // Фильтруем по чётности недели

@@ -36,7 +36,7 @@ export class ScheduleData {
   async getGroupsData(): Promise<Group[]> {
     const res = await fetch("api.php?action=groups");
     const data = await res.json();
-    this.groups = data.map((g: any) => new Group(g.name, g.students_count));
+    this.groups = data.map((g: any) => new Group(g.name, g.students_count, g.group_id));
     return this.groups;
   }
 
@@ -59,12 +59,18 @@ export class ScheduleData {
     });
 
     if (filters.teacher) params.set("teacher", String(filters.teacher.id));
-    if (filters.group) params.set("group", String((filters.group as any).group_id));
-    if (filters.classroom) params.set("classroom", String((filters.classroom as any).room_id));
+    if (filters.group) {
+      const g = filters.group;
+      const gid = (g as any).groupId || (g as any).group_id;
+      if (gid) params.set("group", String(gid));
+    }
+    if (filters.classroom) {
+      const c = filters.classroom;
+      params.set("classroom", (c.building || "") + (c.classroomNumber || ""));
+    }
 
     const res = await fetch("api.php?" + params.toString());
     const data = await res.json();
-    console.log('API response:', JSON.stringify(data));
 
     return data.map((day: any) => {
       const lessons = day.lessons.map((l: any) => {
