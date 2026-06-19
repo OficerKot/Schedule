@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Июн 18 2026 г., 08:23
+-- Время создания: Июн 19 2026 г., 12:40
 -- Версия сервера: 8.0.30
 -- Версия PHP: 7.2.34
 
@@ -53,8 +53,8 @@ INSERT INTO `academic_groups` (`academic_group_id`, `code`, `direction`, `course
 --
 
 CREATE TABLE `building_distances` (
-  `from_building` varchar(50) NOT NULL,
-  `to_building` varchar(50) NOT NULL,
+  `from_building` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `to_building` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `walk_minutes` tinyint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -489,7 +489,8 @@ INSERT INTO `lesson_card` (`card_id`, `semester_date`, `week_type`, `discipline_
 (63, '2026-09-10', 'even', 5, 1, 3, 5, 8, 1),
 (64, '2026-09-10', 'even', 4, 3, 3, 4, 5, 2),
 (65, '2026-09-11', 'all', 6, 1, 3, 6, 7, 3),
-(66, '2026-09-11', 'even', 10, 1, 3, 6, 1, 4);
+(66, '2026-09-11', 'even', 10, 1, 3, 6, 1, 4),
+(67, '2026-06-19', 'all', 2, 2, 1, 1, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -661,6 +662,13 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`user_id`, `login`, `password_hash`, `role`, `teacher_id`, `group_id`) VALUES
+(1, 'admin', '$2y$10$.3pObepSTRnOrbyhNyCw4uFNNbP0Gt/aSGBEwMlhS5FDbsNpoyYe2', 'admin', NULL, NULL);
+
+--
 -- Индексы сохранённых таблиц
 --
 
@@ -816,7 +824,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT для таблицы `lesson_card`
 --
 ALTER TABLE `lesson_card`
-  MODIFY `card_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `card_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT для таблицы `lesson_types`
@@ -858,7 +866,7 @@ ALTER TABLE `time_periods`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
