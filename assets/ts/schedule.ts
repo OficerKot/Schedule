@@ -1,8 +1,4 @@
-﻿import { StudyDay } from "./classes/model/StudyDay.js";
-import { ScheduleViewModel } from "./classes/viewmodel/ScheduleViewModel.js";
-import { createStudyDay } from "./classes/view/StudyDayView.js";
-import { getMonday } from "./helpers/formatDate.js";
-import "./admin.js";
+﻿import { ScheduleViewModel } from "./classes/viewmodel/ScheduleViewModel.js";
 
 const scheduleVM = new ScheduleViewModel();
 

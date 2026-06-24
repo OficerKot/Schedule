@@ -15,6 +15,6 @@
     "sourceMap": true
   },
   "rootDir": "assets/ts",
-  "include": ["assets/ts/**/*", "src/**/*", "assets/ts/constants.ts"],
+  "include": ["assets/ts/**/*"],
   "exclude": ["node_modules", "assets/js"]
 }
