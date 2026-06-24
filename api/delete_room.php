@@ -3,6 +3,8 @@ session_start();
 error_reporting(0);
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/db.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     echo json_encode(['success' => false, 'message' => 'Нет прав доступа']);
     exit;
@@ -16,15 +18,8 @@ if (!$room_id) {
     exit;
 }
 
-try {
-    $pdo = new PDO('mysql:host=localhost;dbname=Schedule;charset=utf8mb4', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    $stmt = $pdo->prepare("DELETE FROM rooms WHERE room_id = :id");
-    $stmt->execute(['id' => $room_id]);
-    
-    echo json_encode(['success' => true, 'message' => 'Аудитория удалена']);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Ошибка БД']);
-}
+$stmt = $pdo->prepare("DELETE FROM rooms WHERE room_id = :id");
+$stmt->execute(['id' => $room_id]);
+
+echo json_encode(['success' => true, 'message' => 'Аудитория удалена']);
 ?>
