@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => {
 const loginLink = document.getElementById('loginLink') as HTMLAnchorElement;
 const loginModal = document.getElementById('loginModal') as HTMLElement;
 const closeBtn = document.querySelector('.close-modal') as HTMLElement;
@@ -47,7 +48,7 @@ if (loginLink && loginModal && closeBtn && loginForm && loginMessage && adminPan
         const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
 
         try {
-            const response = await fetch('/api/login.php', {
+            const response = await fetch('api/login.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ login, password })
@@ -75,7 +76,7 @@ if (loginLink && loginModal && closeBtn && loginForm && loginMessage && adminPan
 
     // Кнопка админ-панели
     adminPanelBtn.addEventListener('click', () => {
-        window.location.href = '../pages/admin.php';
+        window.location.href = 'pages/admin.php';
     });
 }
 
@@ -91,7 +92,7 @@ function addLogoutButton() {
         logoutBtn.textContent = 'Выйти';
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('isAdminLoggedIn');
-            window.location.href = '/api/logout.php';
+            window.location.href = 'api/logout.php';
         });
         adminPanelBtn.parentNode?.insertBefore(logoutBtn, adminPanelBtn.nextSibling);
     }
@@ -99,3 +100,4 @@ function addLogoutButton() {
 
 // Вызываем функцию добавления кнопки выхода
 addLogoutButton();
+});

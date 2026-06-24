@@ -1,4 +1,5 @@
 ﻿import { ScheduleViewModel } from "./classes/viewmodel/ScheduleViewModel.js";
+import "./admin.js";
 
 const scheduleVM = new ScheduleViewModel();
 
