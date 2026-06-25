@@ -1,11 +1,6 @@
 <?php
 session_start();
-
-// Проверка прав администратора
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: index.php');
-    exit;
-}
+$isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -15,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/general.css">
     <link rel="stylesheet" href="../assets/css/schedule.css">
-    <title>Админ-панель</title>
+    <title>Справочники</title>
     <style>
         .adminMenu {
             display: flex;
@@ -182,7 +177,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     <?php include "../includes/header.php"; ?>
 
     <div class="container" style="max-width: 1400px; margin: 20px auto;">
-        <h1>Админ-панель</h1>
+        <h1>Справочники</h1>
         
         <div class="adminMenu">
             <button class="active" onclick="showSection('schedule', this)">Расписание</button>
@@ -194,7 +189,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
         <!-- РАСПИСАНИЕ -->
         <div id="scheduleSection" class="adminSection">
-            <h2>Редактирование расписания</h2>
+            <h2>Расписание</h2>
+            <?php if ($isAdmin): ?>
             <div class="adminForm">
                 <div class="form-group">
                     <label>Дата</label>
@@ -250,6 +246,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                 </div>
                 <button onclick="addLesson()">Добавить занятие</button>
             </div>
+            <?php endif; ?>
             <div id="adminMessage" class="message"></div>
             <div style="margin-top: 20px;">
                 <button onclick="loadScheduleTable()">Обновить таблицу</button>
@@ -264,7 +261,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <th>Аудитория</th>
                             <th>Пара</th>
                             <th>Неделя</th>
-                            <th>Действия</th>
+                            <?php if ($isAdmin): ?><th>Действия</th><?php endif; ?>
                         </tr>
                     </thead>
                     <tbody id="scheduleTableBody"></tbody>
@@ -275,7 +272,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         <!-- ПРЕПОДАВАТЕЛИ -->
         <div id="teachersSection" class="adminSection" style="display: none;">
             <h2>Преподаватели</h2>
+            <?php if ($isAdmin): ?>
             <button onclick="openTeacherModal()" style="margin-bottom: 10px;">Добавить преподавателя</button>
+            <?php endif; ?>
             <table id="teachersTable">
                 <thead>
                     <tr>
@@ -283,7 +282,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         <th>ФИО</th>
                         <th>Должность</th>
                         <th>Кафедра</th>
-                        <th>Действия</th>
+                        <?php if ($isAdmin): ?><th>Действия</th><?php endif; ?>
                     </tr>
                 </thead>
                 <tbody id="teachersTableBody"></tbody>
@@ -293,14 +292,16 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         <!-- ГРУППЫ -->
         <div id="groupsSection" class="adminSection" style="display: none;">
             <h2>Группы</h2>
+            <?php if ($isAdmin): ?>
             <button onclick="openGroupModal()" style="margin-bottom: 10px;">Добавить группу</button>
+            <?php endif; ?>
             <table id="groupsTable">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Название</th>
                         <th>Кол-во студентов</th>
-                        <th>Действия</th>
+                        <?php if ($isAdmin): ?><th>Действия</th><?php endif; ?>
                     </tr>
                 </thead>
                 <tbody id="groupsTableBody"></tbody>
@@ -310,7 +311,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         <!-- АУДИТОРИИ -->
         <div id="roomsSection" class="adminSection" style="display: none;">
             <h2>Аудитории</h2>
+            <?php if ($isAdmin): ?>
             <button onclick="openRoomModal()" style="margin-bottom: 10px;">Добавить аудиторию</button>
+            <?php endif; ?>
             <table id="roomsTable">
                 <thead>
                     <tr>
@@ -319,7 +322,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         <th>Номер</th>
                         <th>Тип</th>
                         <th>Вместимость</th>
-                        <th>Действия</th>
+                        <?php if ($isAdmin): ?><th>Действия</th><?php endif; ?>
                     </tr>
                 </thead>
                 <tbody id="roomsTableBody"></tbody>
@@ -329,7 +332,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         <!-- ДИСЦИПЛИНЫ -->
         <div id="disciplinesSection" class="adminSection" style="display: none;">
             <h2>Дисциплины</h2>
+            <?php if ($isAdmin): ?>
             <button onclick="openDisciplineModal()" style="margin-bottom: 10px;">Добавить дисциплину</button>
+            <?php endif; ?>
             <table id="disciplinesTable">
                 <thead>
                     <tr>
@@ -339,7 +344,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         <th>Часы практики</th>
                         <th>Часы лабораторных</th>
                         <th>Форма отчёта</th>
-                        <th>Действия</th>
+                        <?php if ($isAdmin): ?><th>Действия</th><?php endif; ?>
                     </tr>
                 </thead>
                 <tbody id="disciplinesTableBody"></tbody>
@@ -552,7 +557,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
     <script>
         const API_BASE = '../api/';
-        
+        const isAdmin = <?= json_encode($isAdmin) ?>;
+        const scheduleColspan = isAdmin ? 9 : 8;
+
         function showSection(section, btn) {
             document.querySelectorAll('.adminSection').forEach(el => el.style.display = 'none');
             document.getElementById(section + 'Section').style.display = 'block';
@@ -560,7 +567,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
             document.querySelectorAll('.adminMenu button').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
 
-            if (section === 'schedule') loadDropdowns();
+            if (section === 'schedule') {
+                if (isAdmin) loadDropdowns();
+                loadScheduleTable();
+            }
             if (section === 'teachers') loadTeachersTable();
             if (section === 'groups') loadGroupsTable();
             if (section === 'rooms') loadRoomsTable();
@@ -577,6 +587,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         }
 
         async function loadDropdowns() {
+            if (!isAdmin) return;
             try {
                 console.log('Загрузка справочников...');
                 const urls = [
@@ -709,21 +720,28 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         async function loadScheduleTable() {
             try {
                 console.log('Загрузка расписания...');
-                const response = await fetch(API_BASE + 'get_schedule.php');
+                const response = await fetch(API_BASE + 'get_all_lessons.php');
+                
+                if (!response.ok) {
+                    console.error('HTTP ошибка:', response.status, response.statusText);
+                    throw new Error('HTTP error: ' + response.status);
+                }
+                
                 const lessons = await response.json();
                 
-                console.log('Загружено занятий:', lessons);
+                console.log('Загружено занятий:', lessons.length);
+                console.log('Первые занятия:', lessons.slice(0, 3));
                 
                 const tbody = document.getElementById('scheduleTableBody');
                 if (!tbody) {
-                    console.error('Таблица не найдена');
+                    console.error('Таблица scheduleTableBody не найдена');
                     return;
                 }
                 
                 tbody.innerHTML = '';
                 
                 if (!Array.isArray(lessons) || lessons.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9">Нет занятий</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="' + scheduleColspan + '">Нет занятий</td></tr>';
                     return;
                 }
                 
@@ -739,16 +757,22 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         <td>${l.building || ''}-${l.room_number || '-'}</td>
                         <td>${l.period_number || '-'}</td>
                         <td>${l.week_type || '-'}</td>
-                        <td>
-                            <button class="btn-small btn-edit" onclick="editLesson(${l.card_id})">Ред.</button>
-                            <button class="btn-small btn-delete" onclick="deleteLesson(${l.card_id})">Удалить</button>
-                        </td>
+                        ${
+                            isAdmin
+                            ? `
+                            <td>
+                                <button class="btn-small btn-edit" onclick="editLesson(${l.card_id})">Ред.</button>
+                                <button class="btn-small btn-delete" onclick="deleteLesson(${l.card_id})">Удалить</button>
+                            </td>
+                            `
+                            : ''
+                        }
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (err) {
                 console.error('Ошибка загрузки расписания:', err);
-                showMessage('Ошибка загрузки расписания', false);
+                showMessage('Ошибка загрузки расписания: ' + err.message, false);
             }
         }
 
@@ -889,10 +913,16 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <td>${t.last_name} ${t.first_name} ${t.middle_name || ''}</td>
                             <td>${t.position || '-'}</td>
                             <td>${t.chair || '-'}</td>
-                            <td>
-                                <button class="btn-small btn-edit" onclick="editTeacher(${t.teacher_id})">Ред.</button>
-                                <button class="btn-small btn-delete" onclick="deleteTeacher(${t.teacher_id})">Удл.</button>
-                            </td>
+                            ${
+                                isAdmin
+                                ? `
+                                <td>
+                                    <button class="btn-small btn-edit" onclick="editTeacher(${t.teacher_id})">Ред.</button>
+                                    <button class="btn-small btn-delete" onclick="deleteTeacher(${t.teacher_id})">Удл.</button>
+                                </td>
+                                `
+                                : ''
+                            }
                         `;
                         tbody.appendChild(tr);
                     });
@@ -1002,10 +1032,16 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <td>${g.group_id}</td>
                             <td>${g.name}</td>
                             <td>${g.students_count}</td>
+                            ${
+                                isAdmin
+                                ? `
                             <td>
                                 <button class="btn-small btn-edit" onclick="editGroup(${g.group_id})">Ред.</button>
                                 <button class="btn-small btn-delete" onclick="deleteGroup(${g.group_id})">Удл.</button>
                             </td>
+                                `
+                                : ''
+                            }
                         `;
                         tbody.appendChild(tr);
                     });
@@ -1102,10 +1138,16 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <td>${r.room_number}</td>
                             <td>${r.room_type}</td>
                             <td>${r.seats}</td>
+                            ${
+                                isAdmin
+                                ? `
                             <td>
                                 <button class="btn-small btn-edit" onclick="editRoom(${r.room_id})">Ред.</button>
                                 <button class="btn-small btn-delete" onclick="deleteRoom(${r.room_id})">Удл.</button>
                             </td>
+                                `
+                                : ''
+                            }
                         `;
                         tbody.appendChild(tr);
                     });
@@ -1209,10 +1251,16 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <td>${d.practice_hours || 0}</td>
                             <td>${d.lab_hours || 0}</td>
                             <td>${d.assessment_type || '-'}</td>
+                            ${
+                                isAdmin
+                                ? `
                             <td>
                                 <button class="btn-small btn-edit" onclick="editDiscipline(${d.discipline_id})">Ред.</button>
                                 <button class="btn-small btn-delete" onclick="deleteDiscipline(${d.discipline_id})">Удл.</button>
                             </td>
+                                `
+                                : ''
+                            }
                         `;
                         tbody.appendChild(tr);
                     });
@@ -1302,10 +1350,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Admin page initialized');
-            loadDropdowns();
+            if (isAdmin) loadDropdowns();
             loadScheduleTable();
         });
     </script>
+    <script type="module" src="../assets/js/admin.js"></script>
 </body>
 
 </html>
