@@ -560,7 +560,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
             document.querySelectorAll('.adminMenu button').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
 
-            if (section === 'schedule') loadDropdowns();
+            if (section === 'schedule') {
+                loadDropdowns();
+                loadScheduleTable();
+            }
             if (section === 'teachers') loadTeachersTable();
             if (section === 'groups') loadGroupsTable();
             if (section === 'rooms') loadRoomsTable();
@@ -709,14 +712,21 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         async function loadScheduleTable() {
             try {
                 console.log('Загрузка расписания...');
-                const response = await fetch(API_BASE + 'get_schedule.php');
+                const response = await fetch(API_BASE + 'get_all_lessons.php');
+                
+                if (!response.ok) {
+                    console.error('HTTP ошибка:', response.status, response.statusText);
+                    throw new Error('HTTP error: ' + response.status);
+                }
+                
                 const lessons = await response.json();
                 
-                console.log('Загружено занятий:', lessons);
+                console.log('Загружено занятий:', lessons.length);
+                console.log('Первые занятия:', lessons.slice(0, 3));
                 
                 const tbody = document.getElementById('scheduleTableBody');
                 if (!tbody) {
-                    console.error('Таблица не найдена');
+                    console.error('Таблица scheduleTableBody не найдена');
                     return;
                 }
                 
@@ -748,7 +758,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                 });
             } catch (err) {
                 console.error('Ошибка загрузки расписания:', err);
-                showMessage('Ошибка загрузки расписания', false);
+                showMessage('Ошибка загрузки расписания: ' + err.message, false);
             }
         }
 
@@ -1302,6 +1312,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Admin page initialized');
+            // Загружаем первый активный раздел (расписание)
             loadDropdowns();
             loadScheduleTable();
         });
