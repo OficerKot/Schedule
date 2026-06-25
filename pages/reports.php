@@ -1,5 +1,3 @@
-<!-- pages/reports.php -->
-
 <!DOCTYPE html>
 <html lang="ru">
 

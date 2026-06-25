@@ -17,165 +17,163 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     <link rel="stylesheet" href="../assets/css/schedule.css">
     <title>Админ-панель</title>
     <style>
-        .adminMenu {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
 
-        .adminMenu button {
-            padding: 10px 20px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+    .adminMenu {
+        display: flex;
+        gap: 8px;
+        margin: 20px 0 16px;
+        flex-wrap: wrap;
+    }
+    .adminMenu button {
+        padding: 8px 20px;
+        background: var(--surface-2);
+        border: 1px solid var(--border-mid);
+        border-radius: var(--r-sm);
+        color: var(--t-secondary);
+        font-family: var(--ff);
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .adminMenu button:hover {
+        background: var(--surface-3);
+        color: var(--t-primary);
+    }
+    .adminMenu button.active {
+        background: var(--accent-dim);
+        color: var(--t-accent);
+        border-color: var(--accent);
+        font-weight: 600;
+        box-shadow: 0 0 0 1px var(--accent);
+    }
 
-        .adminMenu button:hover {
-            background: #0056b3;
-        }
+    .adminSection h2 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+        color: var(--t-primary);
+    }
 
-        .adminMenu button.active {
-            background: #0056b3;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
+    /* Кнопка "Добавить" над таблицами */
+    .adminSection > button {
+        padding: 6px 18px;
+        background: var(--surface-2);
+        border: 1px solid var(--border-mid);
+        border-radius: var(--r-sm);
+        color: var(--t-secondary);
+        font-family: var(--ff);
+        font-size: 0.82rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.15s;
+        margin-bottom: 12px;
+    }
+    .adminSection > button:hover {
+        background: var(--surface-3);
+        color: var(--t-primary);
+    }
 
-        .adminSection {
-            margin-top: 20px;
-        }
+    /* Кнопка "Обновить таблицу" */
+    #scheduleSection > div > button {
+        padding: 6px 18px;
+        background: var(--surface-2);
+        border: 1px solid var(--border-mid);
+        border-radius: var(--r-sm);
+        color: var(--t-secondary);
+        font-family: var(--ff);
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: 0.15s;
+        margin-bottom: 8px;
+    }
+    #scheduleSection > div > button:hover {
+        background: var(--surface-3);
+        color: var(--t-primary);
+    }
 
-        .adminForm {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
+    /* Кнопки в модалках (дублируем из general.css на случай, если не подхватится) */
+    .modal-actions .btn-save {
+        background: var(--accent);
+        color: #fff;
+    }
+    .modal-actions .btn-save:hover {
+        background: #6a91ff;
+    }
+    .modal-actions .btn-cancel {
+        background: var(--surface-3);
+        color: var(--t-secondary);
+        border: 1px solid var(--border-mid) !important;
+    }
+    .modal-actions .btn-cancel:hover {
+        color: var(--t-primary);
+    }
 
-        .adminForm .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+    /* Убираем лишние отступы внутри модалок */
+    .modal-box .adminForm {
+        padding: 8px 0;
+        background: transparent;
+        border: none;
+        margin-bottom: 0;
+    }
 
-        .adminForm button {
-            grid-column: 1 / -1;
-            padding: 12px;
-            background: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    /* Таблицы в админке — наследуются от general.css, но добавим компактность */
+    #scheduleTable th,
+    #teachersTable th,
+    #groupsTable th,
+    #roomsTable th,
+    #disciplinesTable th {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+    #scheduleTable td,
+    #teachersTable td,
+    #groupsTable td,
+    #roomsTable td,
+    #disciplinesTable td {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
 
-        .adminForm button:hover {
-            background: #1e7e34;
-        }
+    /* Кнопки действий в таблицах (уже есть в general.css, но если нет — продублируем) */
+    .btn-small {
+        padding: 3px 8px;
+        margin: 0 2px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--r-sm);
+        cursor: pointer;
+        transition: 0.1s;
+    }
+    .btn-small:hover {
+        filter: brightness(1.2);
+    }
+    .btn-edit {
+        background: rgba(240, 168, 54, 0.2);
+        color: #f0a836;
+        border: 1px solid rgba(240, 168, 54, 0.3);
+    }
+    .btn-delete {
+        background: rgba(224, 95, 95, 0.2);
+        color: #e05f5f;
+        border: 1px solid rgba(224, 95, 95, 0.3);
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    /* Сообщение об ошибке/успехе в админке */
+    #adminMessage {
+        margin: 10px 0;
+    }
 
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background: #007bff;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background: #f2f2f2;
-        }
-
-        tr:hover {
-            background: #e9ecef;
-        }
-
-        .btn-small {
-            padding: 5px 10px;
-            margin: 0 2px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .btn-edit {
-            background: #ffc107;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: #fff;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
+    /* Адаптив для модалок */
+    @media (max-width: 600px) {
         .modal-box {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            width: 500px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+            padding: 16px;
         }
-
-        .modal-box h3 {
-            margin-top: 0;
+        .adminForm {
+            grid-template-columns: 1fr !important;
         }
-
-        .modal-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .modal-actions button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-save {
-            background: #28a745;
-            color: #fff;
-        }
-
-        .btn-cancel {
-            background: #6c757d;
-            color: #fff;
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>
