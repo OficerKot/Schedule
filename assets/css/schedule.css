@@ -214,15 +214,12 @@
 }
 
 .card .lesson-meta .teacher::before {
-  content: "👨‍🏫";
   font-size: 0.7rem;
 }
 .card .lesson-meta .classroom::before {
-  content: "🏛️";
   font-size: 0.7rem;
 }
 .card .lesson-meta .group::before {
-  content: "👥";
   font-size: 0.7rem;
 }
 

@@ -12,7 +12,7 @@
 <?php include "includes/header.php";?>
 
 <body>
-	<h1>📅 Расписание занятий</h1>
+	<h1> Расписание занятий</h1>
 
 	<!-- Контейнер с кнопками управления -->
 	<div class="navButtonsContainer">
