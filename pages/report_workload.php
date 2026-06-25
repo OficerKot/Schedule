@@ -12,22 +12,22 @@
 <body>
     <div class="report-page">
         <div class="report-header">
-            <h2>Нагрузка преподавателей</h2>
+            <h2> Нагрузка преподавателей</h2>
             <a href="reports.php" class="back-btn">← Назад к отчетам</a>
         </div>
         <div class="filters">
             <div class="filter-group">
-                <label>Подразделение:</label>
+                <label for="subdivisionSelect"> Подразделение</label>
                 <select id="subdivisionSelect">
-                    <option value="1">Кафедра математики</option>
-                    <option value="2">Кафедра ИТ</option>
-                    <option value="3">Кафедра экономики</option>
+                    <option value="4">Кафедра математики</option>
+                    <option value="5">Кафедра ИТ</option>
+                    <option value="6">Кафедра экономики</option>
                 </select>
             </div>
-            <button id="loadReportBtn">Сформировать</button>
+            <button id="loadReportBtn"> Сформировать</button>
         </div>
         <div id="reportContent">
-            <div class="info">Выберите подразделение и нажмите "Сформировать"</div>
+            <div class="info"> Выберите подразделение и нажмите «Сформировать»</div>
         </div>
     </div>
     <script src="../assets/js/reports.js"></script>

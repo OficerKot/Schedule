@@ -262,3 +262,157 @@
 .export-buttons button:last-child:hover {
   background: #0b7a45;
 }
+
+/* ==========================================
+   ШАХМАТНАЯ ВЕДОМОСТЬ (дополнительные стили)
+   ========================================== */
+
+.filter-group select[multiple] {
+  min-height: 120px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-sm);
+  color: var(--t-primary);
+  padding: 6px 8px;
+  font-family: var(--ff);
+  font-size: 0.82rem;
+  width: 100%;
+  min-width: 220px;
+}
+.filter-group select[multiple] option {
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+.filter-group select[multiple] option:checked {
+  background: var(--accent)
+    linear-gradient(0deg, var(--accent) 0%, var(--accent) 100%);
+  color: #fff;
+}
+.filter-group select[multiple] option:hover {
+  background: var(--surface-3);
+}
+
+/* Таблица шахматки */
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-top: 8px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+.matrix-table th,
+.matrix-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+.matrix-table th {
+  background: var(--surface-2);
+  color: var(--t-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+.matrix-table td {
+  color: var(--t-primary);
+  background: var(--surface);
+}
+.matrix-table tr:nth-child(even) td {
+  background: var(--surface-2);
+}
+.matrix-table tr:hover td {
+  background: var(--surface-3);
+}
+.matrix-table .group-name {
+  font-weight: 600;
+  color: var(--t-accent);
+  text-align: left;
+}
+.matrix-table .empty-cell {
+  color: var(--t-muted);
+  font-size: 0.7rem;
+}
+
+/* Блок статистики */
+.report-stats {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  color: var(--t-secondary);
+  font-size: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.report-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.report-stats .badge {
+  background: var(--accent-dim);
+  color: var(--t-accent);
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-weight: 600;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+  .matrix-table {
+    font-size: 0.7rem;
+  }
+  .matrix-table th,
+  .matrix-table td {
+    padding: 6px 8px;
+  }
+  .filter-group select[multiple] {
+    min-width: unset;
+    width: 100%;
+  }
+}
+/* ==========================================
+   ГОРИЗОНТАЛЬНАЯ ПРОКРУТКА ДЛЯ ТАБЛИЦ
+   ========================================== */
+
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  margin: 8px 0 12px 0;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 2px 0;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+.table-wrapper::-webkit-scrollbar-track {
+  background: var(--surface-2);
+  border-radius: 4px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--t-accent);
+}
+
+/* Сама таблица внутри обёртки будет занимать 100% ширины, но обёртка ограничит прокрутку */
+.table-wrapper .matrix-table,
+.table-wrapper .report-table {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}

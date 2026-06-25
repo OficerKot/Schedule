@@ -15,9 +15,10 @@
             <h2>Занятость помещений</h2>
             <a href="reports.php" class="back-btn">← Назад к отчетам</a>
         </div>
+
         <div class="filters">
             <div class="filter-group">
-                <label>Корпус:</label>
+                <label for="buildingSelect">Корпус</label>
                 <select id="buildingSelect">
                     <option value="">Все корпуса</option>
                     <option value="А">Корпус А</option>
@@ -27,10 +28,12 @@
             </div>
             <button id="loadReportBtn">Сформировать</button>
         </div>
+
         <div id="reportContent">
-            <div class="info">Выберите корпус и нажмите "Сформировать"</div>
+            <div class="info">Выберите корпус и нажмите «Сформировать»</div>
         </div>
     </div>
+
     <script src="../assets/js/reports.js"></script>
 </body>
 </html>

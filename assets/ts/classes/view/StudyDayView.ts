@@ -40,7 +40,7 @@ export function createStudyDay(
   if (studyDay.lessons.length === 0) {
     const empty = document.createElement("div");
     empty.className = "empty-day";
-    empty.textContent = "✨ Нет занятий";
+    empty.textContent = "Нет занятий";
     cardsContainer.appendChild(empty);
   } else {
     studyDay.lessons.forEach((lesson) => {

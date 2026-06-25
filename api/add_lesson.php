@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 error_reporting(0);
 header('Content-Type: application/json');
@@ -18,6 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 $date = $input['date'] ?? '';
+if ($date) {
+    $dayOfWeek = date('N', strtotime($date)); // 1 = понедельник, 7 = воскресенье
+    if ($dayOfWeek == 7) {
+        echo json_encode(['success' => false, 'message' => 'Нельзя добавлять пары в воскресенье']);
+        exit;
+    }
+}
 $group_id = $input['group_id'] ?? 0;
 $teacher_id = $input['teacher_id'] ?? 0;
 $room_id = $input['room_id'] ?? 0;
@@ -75,6 +84,6 @@ try {
     
     echo json_encode(['success' => true, 'message' => 'Занятие добавлено']);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Ошибка БД']);
+    echo json_encode(['success' => false, 'message' => 'Ошибка БД: ' . $e->getMessage()]);
 }
 ?>
