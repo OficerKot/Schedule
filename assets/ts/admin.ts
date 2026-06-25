@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.style.cssText = 'margin-left: 10px; padding: 8px 15px; background: #dc3545; color: #fff; border: none; border-radius: 4px; cursor: pointer;';
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('isAdminLoggedIn');
-            window.location.href = '/api/logout.php';
+            window.location.href = '../api/logout.php';
         });
         
         // Всегда добавляем кнопку в header
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
 
             try {
-                const response = await fetch('/api/login.php', {
+                const response = await fetch('../api/login.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login, password })
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         adminPanelBtn.addEventListener('click', () => {
-            window.location.href = '/pages/admin.php';
+            window.location.href = '../pages/admin.php';
         });
     }
 });
