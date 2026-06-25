@@ -1,4 +1,4 @@
-<!-- pages/report_group_schedule.php -->
+<!-- pages/report_exams.php -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/general.css">
     <link rel="stylesheet" href="../assets/css/reports.css">
-    <title>Расписание группы - Отчет</title>
+    <title>Зачеты и экзамены - Отчет</title>
 </head>
 <?php include "../includes/header.php"; ?>
 <body>
     <div class="report-page">
         <div class="report-header">
-            <h2>Расписание группы</h2>
+            <h2>Зачеты и экзамены</h2>
             <a href="reports.php" class="back-btn">← Назад к отчетам</a>
         </div>
         <div class="filters">
@@ -29,18 +29,10 @@
                     <option value="8">Б9140-38.03.01-Эк</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label>Неделя:</label>
-                <select id="weekSelect">
-                    <option value="1">Неделя 1</option>
-                    <option value="2">Неделя 2</option>
-                    <option value="3">Неделя 3</option>
-                </select>
-            </div>
             <button id="loadReportBtn">Сформировать</button>
         </div>
         <div id="reportContent">
-            <div class="info">Выберите параметры и нажмите "Сформировать"</div>
+            <div class="info">Выберите группу и нажмите "Сформировать"</div>
         </div>
     </div>
     <script src="../assets/js/reports.js"></script>

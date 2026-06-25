@@ -1,4 +1,4 @@
-<!-- pages/report_group_schedule.php -->
+<!-- pages/report_matrix.php -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,19 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/general.css">
     <link rel="stylesheet" href="../assets/css/reports.css">
-    <title>Расписание группы - Отчет</title>
+    <title>Шахматная ведомость - Отчет</title>
 </head>
 <?php include "../includes/header.php"; ?>
 <body>
     <div class="report-page">
         <div class="report-header">
-            <h2>Расписание группы</h2>
+            <h2>Шахматная ведомость</h2>
             <a href="reports.php" class="back-btn">← Назад к отчетам</a>
         </div>
         <div class="filters">
             <div class="filter-group">
-                <label>Группа:</label>
-                <select id="groupSelect">
+                <label>Группы (выберите несколько):</label>
+                <select id="groupSelect" multiple size="4">
                     <option value="1">Б9124-09.03.03-Пикд</option>
                     <option value="2">Б9124-09.03.03-Пикр</option>
                     <option value="3">Б9125-09.03.03-Пикд</option>
@@ -40,7 +40,7 @@
             <button id="loadReportBtn">Сформировать</button>
         </div>
         <div id="reportContent">
-            <div class="info">Выберите параметры и нажмите "Сформировать"</div>
+            <div class="info">Выберите группы и нажмите "Сформировать"</div>
         </div>
     </div>
     <script src="../assets/js/reports.js"></script>

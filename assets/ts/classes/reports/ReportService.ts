@@ -1,6 +1,7 @@
 // src/services/ReportService.ts
 
 import { ScheduleData } from '../data/ScheduleData.js';
+import { FiltrationState } from '../viewmodel/FiltrationState.js';  // 👈 ДОБАВЛЯЕМ ИМПОРТ
 
 // Типы данных для отчетов
 export interface GroupScheduleRow {
@@ -14,7 +15,7 @@ export interface GroupScheduleRow {
 }
 
 export interface MatrixRow {
-    [key: string]: string; // "day_period" -> disciplineName
+    [key: string]: string;
 }
 
 export interface ExamRow {
@@ -55,24 +56,23 @@ export class ReportService {
     // Отчет №1: Расписание одной группы
     // ==========================================
     async getGroupSchedule(groupId: number, weekNumber: number = 1): Promise<GroupScheduleRow[]> {
-        // Используем существующий метод getStudyDays() из ScheduleData
-        // Предполагаем, что FiltrationState содержит groupId и weekNumber
-        const filters = {
-            groupId: groupId,
-            weekNumber: weekNumber,
-            // ... другие поля, если нужны
-        };
-        
-        const studyDays = await this.dataProvider.getStudyDays(filters as any);
+        // Получаем группу (нужен метод getGroupById)
+        const group = await this.dataProvider.getGroupById(groupId);
+        if (!group) return [];
+
+        // Создаем фильтр
+        const filters = new FiltrationState();
+        filters.group = group;
+
+        // Вычисляем понедельник нужной недели
+        const monday = this.getMondayOfWeek(weekNumber);
+
+        // ✅ ПЕРЕДАЕМ 2 АРГУМЕНТА: filters И monday
+        const studyDays = await this.dataProvider.getStudyDays(filters, monday);
+
         const result: GroupScheduleRow[] = [];
-        
-        // Преобразуем StudyDay[] в GroupScheduleRow[]
-        // Это временная заглушка, пока getStudyDays() не возвращает реальные данные
-        // Замените на реальную логику, когда getStudyDays() будет готов
-        
-        // Пример преобразования (адаптируйте под свою структуру)
         for (const day of studyDays) {
-            for (const lesson of day.lessons) {
+            for (const lesson of day.getLessons()) {
                 result.push({
                     day: day.date.toLocaleDateString('ru-RU', { weekday: 'short' }),
                     period: `${lesson.lessonNumber} пара`,
@@ -84,7 +84,7 @@ export class ReportService {
                 });
             }
         }
-        
+
         return result;
     }
 
@@ -97,34 +97,38 @@ export class ReportService {
         periods: string[];
         matrix: { [groupName: string]: MatrixRow };
     }> {
-        // Заглушка: возвращает тестовые данные
-        // Здесь нужно будет сделать несколько запросов к getStudyDays() для каждой группы
-        
         const days = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
         const periods = ['1', '2', '3', '4', '5', '6', '7', '8'];
         const matrix: { [key: string]: MatrixRow } = {};
-        
+        const groupNames: string[] = [];
+
+        const monday = this.getMondayOfWeek(weekNumber);
+
         for (const groupId of groupIds) {
-            // Получаем данные для группы
-            const filters = { groupId, weekNumber };
-            const studyDays = await this.dataProvider.getStudyDays(filters as any);
-            
-            // Заполняем матрицу
-            const groupName = `Группа ${groupId}`;
+            const group = await this.dataProvider.getGroupById(groupId);
+            if (!group) continue;
+
+            groupNames.push(group.name);
+
+            const filters = new FiltrationState();
+            filters.group = group;
+
+            // ✅ ПЕРЕДАЕМ 2 АРГУМЕНТА: filters И monday
+            const studyDays = await this.dataProvider.getStudyDays(filters, monday);
+
             const row: MatrixRow = {};
-            
             for (const day of studyDays) {
-                for (const lesson of day.lessons) {
+                for (const lesson of day.getLessons()) {
                     const key = `${day.date.getDay()}_${lesson.lessonNumber}`;
                     row[key] = lesson.lessonName;
                 }
             }
-            
-            matrix[groupName] = row;
+
+            matrix[group.name] = row;
         }
-        
+
         return {
-            groups: groupIds.map(id => `Группа ${id}`),
+            groups: groupNames,
             days,
             periods,
             matrix
@@ -190,5 +194,18 @@ export class ReportService {
                 '5 пара (15:10-16:40)': 1,
             }
         };
+    }
+
+    // ==========================================
+    // Вспомогательные методы
+    // ==========================================
+
+    private getMondayOfWeek(weekNumber: number): Date {
+        // Базовая дата: 1 сентября 2026 года (начало семестра)
+        const baseDate = new Date(2026, 8, 1); // 1 сентября 2026
+        // Сдвиг на (weekNumber - 1) недель
+        const monday = new Date(baseDate);
+        monday.setDate(monday.getDate() + (weekNumber - 1) * 7);
+        return monday;
     }
 }

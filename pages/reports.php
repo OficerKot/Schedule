@@ -15,13 +15,13 @@
 
 <body>
 	<div class="reports-page">
-		<h1>📊 Отчеты</h1>
+		<h1>Отчеты</h1>
 		<p class="subtitle">Выберите тип отчета для формирования:</p>
 
 		<div class="reports-grid">
 			<!-- Отчет 1 -->
 			<div class="report-card" onclick="location.href='report_group_schedule.php'">
-				<div class="icon">📋</div>
+
 				<h3>Расписание группы</h3>
 				<p>Печатная форма расписания для одной группы</p>
 				<button class="btn-open">Открыть</button>
@@ -29,7 +29,7 @@
 
 			<!-- Отчет 2 -->
 			<div class="report-card" onclick="location.href='report_matrix.php'">
-				<div class="icon">📊</div>
+
 				<h3>Шахматная ведомость</h3>
 				<p>Расписание нескольких групп в виде шахматки</p>
 				<button class="btn-open">Открыть</button>
@@ -37,7 +37,7 @@
 
 			<!-- Отчет 3 -->
 			<div class="report-card" onclick="location.href='report_exams.php'">
-				<div class="icon">📝</div>
+
 				<h3>Зачеты и экзамены</h3>
 				<p>Список зачетов и экзаменов для группы</p>
 				<button class="btn-open">Открыть</button>
@@ -45,7 +45,7 @@
 
 			<!-- Отчет 4 -->
 			<div class="report-card" onclick="location.href='report_workload.php'">
-				<div class="icon">👨‍🏫</div>
+
 				<h3>Нагрузка преподавателей</h3>
 				<p>План занятости преподавателей подразделения</p>
 				<button class="btn-open">Открыть</button>
@@ -53,7 +53,7 @@
 
 			<!-- Отчет 5 -->
 			<div class="report-card" onclick="location.href='report_classrooms.php'">
-				<div class="icon">🏫</div>
+
 				<h3>Занятость помещений</h3>
 				<p>Сводная занятость по типам, времени, корпусам</p>
 				<button class="btn-open">Открыть</button>
