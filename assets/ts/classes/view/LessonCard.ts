@@ -15,40 +15,67 @@ export class LessonCard {
     return this.divElem;
   }
 
-  //**Создание div элемента с карточкой занятия */
   private createCard() {
-    //TODO: Добавить дизайн для карточки!
-
     this.divElem = document.createElement("div");
-    this.divElem.classList.add("card");
+
+    // ===== ВАЖНО: Добавляем классы для CSS =====
+    const typeMap: Record<string, string> = {
+      Лекция: "lecture",
+      Практика: "practical",
+      "Лабораторные работы": "lab",
+      Зачёт: "credit",
+      Экзамен: "exam",
+    };
+
+    const typeClass = typeMap[this.lesson.lessonType] || "lecture";
+    this.divElem.classList.add("card", typeClass);
+
+    // Форматируем имя преподавателя
+    const teacherName = `${this.lesson.teacher.last_name} ${this.lesson.teacher.first_name.charAt(0)}.${this.lesson.teacher.middle_name.charAt(0)}.`;
+
     this.divElem.innerHTML = `
-    <div>${this.lesson.lessonName}</div>
-    <div>${this.lesson.lessonType}</div>
-    <div>${this.lesson.group.name}</div>
-    <div>${this.lesson.classroom.building + this.lesson.classroom.classroomNumber}</div>
-  `;
+      <div class="lesson-time">${this.lesson.lessonNumber} пара</div>
+      <div class="lesson-name">${this.lesson.lessonName}</div>
+      <div class="lesson-meta">
+        <span class="lesson-type">${this.lesson.lessonType}</span>
+        <span class="teacher">${teacherName}</span>
+        <span class="classroom">${this.lesson.classroom.building}-${this.lesson.classroom.classroomNumber}</span>
+        <span class="group">${this.lesson.group.name}</span>
+      </div>
+    `;
   }
 
-  //**Создаёт диалоговое окно с полной информацией о занятии */
   private createDialog() {
     this.dialogElem = document.createElement("dialog");
+    this.dialogElem.style.cssText = `
+      background: #161b22;
+      color: #dde4f0;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 400px;
+      font-family: 'Inter', sans-serif;
+    `;
+
+    const teacherName = `${this.lesson.teacher.last_name} ${this.lesson.teacher.first_name} ${this.lesson.teacher.middle_name}`;
+
     this.dialogElem.innerHTML = `
-	<div>Дисциплина: ${this.lesson.lessonName}</div>
-    <div>Тип занятия: ${this.lesson.lessonType}</div>
-    <div>Преподаватель: ${this.lesson.teacher.last_name} ${this.lesson.teacher.first_name} ${this.lesson.teacher.middle_name}</div>
-    <div>Группа: ${this.lesson.group.name}, ${this.lesson.group.studentCount}чел.</div>
-    <div>Аудитория: ${this.lesson.classroom.building + this.lesson.classroom.classroomNumber}</div>
-	`;
+      <h3 style="margin: 0 0 16px 0; color: #dde4f0;">${this.lesson.lessonName}</h3>
+      <div style="margin: 8px 0; color: #8590a8;"><strong style="color: #7aa3ff;">Тип:</strong> ${this.lesson.lessonType}</div>
+      <div style="margin: 8px 0; color: #8590a8;"><strong style="color: #7aa3ff;">Преподаватель:</strong> ${teacherName}</div>
+      <div style="margin: 8px 0; color: #8590a8;"><strong style="color: #7aa3ff;">Группа:</strong> ${this.lesson.group.name} (${this.lesson.group.studentCount} чел.)</div>
+      <div style="margin: 8px 0; color: #8590a8;"><strong style="color: #7aa3ff;">Аудитория:</strong> ${this.lesson.classroom.building}-${this.lesson.classroom.classroomNumber} (${this.lesson.classroom.seats} мест)</div>
+      <button style="margin-top: 16px; padding: 8px 20px; background: #4f7fff; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif;">Закрыть</button>
+    `;
 
-    const closeBtn = document.createElement("button");
-    closeBtn.textContent = "Закрыть";
-    closeBtn.addEventListener("click", () => this.dialogElem.close());
+    const closeBtn = this.dialogElem.querySelector("button");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => this.dialogElem.close());
+    }
 
-    this.dialogElem.appendChild(closeBtn);
     document.body.appendChild(this.dialogElem);
   }
 
-  //**Управляет открытием/закрытием диалогового окна */
   private handleClick() {
     if (!this.dialogElem.open) {
       this.dialogElem.showModal();

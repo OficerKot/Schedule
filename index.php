@@ -6,18 +6,20 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="assets/css/general.css">
 	<link rel="stylesheet" href="assets/css/schedule.css">
-	<title>Расписание</title>
+	<title>Расписание занятий</title>
 </head>
 
 <?php include "includes/header.php";?>
 
 <body>
-	<h1>Расписание занятий</h1>
+	<h1>📅 Расписание занятий</h1>
 
 	<!-- Контейнер с кнопками управления -->
 	<div class="navButtonsContainer">
 		<?php include "includes/filterButtons.php"; ?>
-		<?php include "includes/weekNavButtons.php"; ?>
+		<div class="nav-buttons">
+			<?php include "includes/weekNavButtons.php"; ?>
+		</div>
 	</div>
 
 	<!-- Контейнер с учебными днями (пн-сб) -->

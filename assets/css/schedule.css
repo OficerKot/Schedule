@@ -1,56 +1,254 @@
-* {
-	box-sizing: border-box;
-}
+/*SCHEDULE.CSS  — Расписание  */
 
+/*  ОСНОВНОЙ КОНТЕЙНЕР  */
 .scheduleContainer {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	max-width: 100%;
-	gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
+/*КОЛОНКА ДНЯ */
 .dayColumn {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	border: 0.5px solid #b4b4b4;
-	min-height: 95vh;
-	width: 15%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
 }
 
+.dayColumn:hover {
+  border-color: rgba(79, 127, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(79, 127, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.dayColumn.today {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 4px 24px var(--accent-glow);
+}
+
+.dayColumn.weekend {
+  opacity: 0.55;
+}
+
+/* ЗАГОЛОВОК ДНЯ  */
 .dateContainer {
-	border: 1px solid #b4b4b4;
-	font-weight: bold;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  padding: 12px 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
 }
 
+.dateContainer .day-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--t-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dateContainer .day-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--t-primary);
+  display: block;
+  line-height: 1.2;
+}
+
+.dateContainer .day-month {
+  font-size: 0.65rem;
+  color: var(--t-muted);
+  font-weight: 500;
+}
+
+.dayColumn.today .dateContainer {
+  background: var(--accent-dim);
+  border-bottom-color: rgba(79, 127, 255, 0.2);
+}
+
+.dayColumn.today .dateContainer .day-name,
+.dayColumn.today .dateContainer .day-number,
+.dayColumn.today .dateContainer .day-month {
+  color: var(--t-accent);
+}
+
+/*  КОНТЕЙНЕР КАРТОЧЕК  */
 .cardsContainer {
-	display: flex;
-	flex-direction: column;
-	align-items: start;
-	justify-content: center;
-	gap: 2px;
-	padding: 4px;
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+.cardsContainer .empty-day {
+  text-align: center;
+  color: var(--t-muted);
+  font-size: 0.75rem;
+  padding: 24px 8px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--border);
+  font-weight: 500;
+}
+
+/*  КАРТОЧКА ЗАНЯТИЯ */
 .card {
-	border-radius: 10px;
-	background-color: rgb(164, 164, 255);
-	width: 100%;
-	min-height: 60px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  transition:
+    background 0.15s,
+    transform 0.12s,
+    box-shadow 0.15s;
+  cursor: default;
+  position: relative;
 }
 
-.navButtonsContainer {
-	display: flex;
-	flex-direction: row;
-	margin: 0 60px 8px 60px;
+.card:hover {
+  background: var(--surface-3);
+  transform: translateX(2px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
 
-	max-width: 100%;
-	align-items: center;
-	justify-content: space-between;
+/* Цвета для типов занятий */
+.card.lecture {
+  border-left-color: #3b82f6;
+}
+.card.practical {
+  border-left-color: #22c98e;
+}
+.card.lab {
+  border-left-color: #f0a836;
+}
+.card.exam {
+  border-left-color: #e05f5f;
+}
+.card.credit {
+  border-left-color: #8b5cf6;
+}
+.card.consultation {
+  border-left-color: #ec4899;
+}
 
+/* Содержимое карточки */
+.card .lesson-time {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--t-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+  font-family: var(--ff-mono);
+}
+
+.card .lesson-name {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--t-primary);
+  line-height: 1.3;
+}
+
+.card .lesson-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 0.68rem;
+  color: var(--t-secondary);
+  margin-top: 4px;
+  align-items: center;
+}
+
+.card .lesson-meta .lesson-type {
+  padding: 0 8px;
+  border-radius: 99px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  line-height: 1;
+}
+
+.card.lecture .lesson-meta .lesson-type {
+  background: #3b82f6;
+}
+.card.practical .lesson-meta .lesson-type {
+  background: #22c98e;
+}
+.card.lab .lesson-meta .lesson-type {
+  background: #f0a836;
+}
+.card.exam .lesson-meta .lesson-type {
+  background: #e05f5f;
+}
+.card.credit .lesson-meta .lesson-type {
+  background: #8b5cf6;
+}
+.card.consultation .lesson-meta .lesson-type {
+  background: #ec4899;
+}
+
+.card .lesson-meta .teacher,
+.card .lesson-meta .classroom,
+.card .lesson-meta .group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.card .lesson-meta .teacher::before {
+  content: "👨‍🏫";
+  font-size: 0.7rem;
+}
+.card .lesson-meta .classroom::before {
+  content: "🏛️";
+  font-size: 0.7rem;
+}
+.card .lesson-meta .group::before {
+  content: "👥";
+  font-size: 0.7rem;
+}
+
+/*  АДАПТИВНОСТЬ */
+@media (max-width: 1100px) {
+  .scheduleContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .scheduleContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+  .dayColumn {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scheduleContainer {
+    grid-template-columns: 1fr;
+  }
+  .dayColumn {
+    min-height: auto;
+  }
 }
