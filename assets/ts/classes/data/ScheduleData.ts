@@ -51,7 +51,24 @@ export class ScheduleData {
     ));
     return this.classrooms;
   }
+  // ScheduleData.ts
 
+  async getGroupById(groupId: number): Promise<Group | null> {
+      // Если группы уже загружены — ищем в кэше
+      if (this.groups.length > 0) {
+          return this.groups.find(g => {
+              const id = (g as any).groupId || (g as any).group_id;
+              return id === groupId;
+          }) || null;
+      }
+      
+      // Если нет — делаем запрос к БД
+      const res = await fetch(`api.php?action=group&id=${groupId}`);
+      const data = await res.json();
+      if (!data) return null;
+      
+      return new Group(data.name, data.students_count, data.group_id);
+  }
   async getStudyDays(filters: FiltrationState, monday: Date): Promise<StudyDay[]> {
     const params = new URLSearchParams();
     params.set("monday", monday.toISOString().split("T")[0]);
