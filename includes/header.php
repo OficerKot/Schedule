@@ -7,9 +7,9 @@
 		<a href="<?= $basePath ?>index.php" style="text-decoration: none;">Расписание</a>
 		<a href="<?= $basePath ?>pages/teachersInfo.php" style="text-decoration: none;">Преподаватели</a>
 		<a href="<?= $basePath ?>pages/reports.php" style="text-decoration: none;" class="active">Отчеты</a>
+		<a href="<?= $basePath ?>pages/admin.php" style="text-decoration: none;">Справочники</a>
 
 		<a href="#" id="loginLink" style="text-decoration: none; color: #007bff;">Вход</a>
-		<button id="adminPanelBtn" style="display: none; margin-left: 10px;">Админ-панель</button>
 	</div>
 </header>
 

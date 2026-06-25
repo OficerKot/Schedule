@@ -1,7 +1,13 @@
 <?php
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: application/json');
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    echo json_encode(['success' => false, 'message' => 'Недостаточно прав']);
+    exit;
+}
 
 require_once __DIR__ . '/db.php';
 
