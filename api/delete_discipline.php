@@ -3,6 +3,8 @@ session_start();
 error_reporting(0);
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/db.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     echo json_encode(['success' => false, 'message' => 'Нет прав доступа']);
     exit;
@@ -16,20 +18,13 @@ if (!$discipline_id) {
     exit;
 }
 
-try {
-    $pdo = new PDO('mysql:host=localhost;dbname=Schedule;charset=utf8mb4', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Удаляем часы дисциплины
-    $stmt = $pdo->prepare("DELETE FROM discipline_hours WHERE discipline_id = :id");
-    $stmt->execute(['id' => $discipline_id]);
-    
-    // Удаляем дисциплину
-    $stmt = $pdo->prepare("DELETE FROM disciplines WHERE discipline_id = :id");
-    $stmt->execute(['id' => $discipline_id]);
-    
-    echo json_encode(['success' => true, 'message' => 'Дисциплина удалена']);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Ошибка БД']);
-}
+// Удаляем часы дисциплины
+$stmt = $pdo->prepare("DELETE FROM discipline_hours WHERE discipline_id = :id");
+$stmt->execute(['id' => $discipline_id]);
+
+// Удаляем дисциплину
+$stmt = $pdo->prepare("DELETE FROM disciplines WHERE discipline_id = :id");
+$stmt->execute(['id' => $discipline_id]);
+
+echo json_encode(['success' => true, 'message' => 'Дисциплина удалена']);
 ?>

@@ -81,4 +81,6 @@
 	</div>
 </body>
 
+<script type="module" src="../assets/js/admin.js"></script>
+
 </html>

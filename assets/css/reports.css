@@ -1,0 +1,269 @@
+/* ==========================================
+   МИНИМАЛЬНЫЙ CSS ДЛЯ СТРАНИЦЫ ОТЧЕТОВ
+   ========================================== */
+
+/* ---------- ОБЩИЕ КОНТЕЙНЕРЫ ---------- */
+
+.reports-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.report-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ---------- ЗАГОЛОВКИ ---------- */
+
+.reports-page h1 {
+    font-size: 28px;
+    margin-bottom: 4px;
+}
+
+.report-page h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 24px;
+}
+
+/* ---------- ШАПКА ОТЧЕТА (заголовок + кнопка "Назад") ---------- */
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #eee;
+}
+
+.back-btn {
+    padding: 8px 20px;
+    background: #6c757d;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+}
+
+/* ---------- СЕТКА КАРТОЧЕК ОТЧЕТОВ ---------- */
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+/* ---------- КАРТОЧКА ОТЧЕТА ---------- */
+
+.report-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 16px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.report-card:hover {
+    border-color: #4a90d9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.report-card .icon {
+    font-size: 40px;
+}
+
+.report-card h3 {
+    margin: 8px 0 4px 0;
+    font-size: 18px;
+}
+
+.report-card p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.btn-open {
+    padding: 6px 24px;
+    background: #4a90d9;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-open:hover {
+    background: #357abd;
+}
+
+/* ---------- ФИЛЬТРЫ ---------- */
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.filter-group select {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 180px;
+}
+
+#loadReportBtn {
+    padding: 6px 24px;
+    background: #4a90d9;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#loadReportBtn:hover {
+    background: #357abd;
+}
+
+/* ---------- ТАБЛИЦЫ ---------- */
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.report-table th {
+    background: #f5f7fa;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    font-weight: 600;
+}
+
+.report-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.report-table tr:hover {
+    background: #f8f9ff;
+}
+
+/* ---------- БЭЙДЖИ ТИПОВ ЗАНЯТИЙ ---------- */
+
+.type-badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.type-badge.Лекция { background: #e3f2fd; color: #1565c0; }
+.type-badge.Практика { background: #e8f5e9; color: #2e7d32; }
+.type-badge.Лабораторная { background: #fff3e0; color: #e65100; }
+.type-badge.Зачёт { background: #f3e5f5; color: #7b1fa2; }
+.type-badge.Экзамен { background: #ffebee; color: #c62828; }
+
+/* ---------- СОСТОЯНИЯ ---------- */
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.error {
+    text-align: center;
+    padding: 40px;
+    color: #c62828;
+    background: #ffebee;
+    border-radius: 8px;
+}
+
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.info {
+    text-align: center;
+    padding: 40px;
+    color: #555;
+    background: #f5f7fa;
+    border-radius: 8px;
+}
+
+/* ---------- КНОПКИ ЭКСПОРТА ---------- */
+
+.export-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.export-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.export-buttons button:first-child {
+    background: #1a73e8;
+    color: #fff;
+}
+
+.export-buttons button:first-child:hover {
+    background: #1557b0;
+}
+
+.export-buttons button:last-child {
+    background: #0f9d58;
+    color: #fff;
+}
+
+.export-buttons button:last-child:hover {
+    background: #0b7a45;
+}

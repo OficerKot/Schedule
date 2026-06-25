@@ -1,7 +1,4 @@
-﻿import { StudyDay } from "./classes/model/StudyDay.js";
-import { ScheduleViewModel } from "./classes/viewmodel/ScheduleViewModel.js";
-import { createStudyDay } from "./classes/view/StudyDayView.js";
-import { getMonday } from "./helpers/formatDate.js";
+﻿import { ScheduleViewModel } from "./classes/viewmodel/ScheduleViewModel.js";
 import "./admin.js";
 
 const scheduleVM = new ScheduleViewModel();
@@ -14,9 +11,14 @@ async function init() {
   const classrooms = await scheduleVM.data.getClassroomsData();
 
   // Заполняем select фильтров
-  const teacherSelect = document.getElementById("teacherFilter") as HTMLSelectElement;
-  const groupSelect = document.getElementById("groupFilter") as HTMLSelectElement;
-  const classroomSelect = document.getElementById("classroomFilter") as HTMLSelectElement;
+  const teacherSelect = document.getElementById("teacherFilter") as HTMLSelectElement | null;
+  const groupSelect = document.getElementById("groupFilter") as HTMLSelectElement | null;
+  const classroomSelect = document.getElementById("classroomFilter") as HTMLSelectElement | null;
+
+  if (!teacherSelect || !groupSelect || !classroomSelect) {
+    // На странице нет фильтров — выходим, но admin.ts продолжит работу
+    return;
+  }
 
   teachers.forEach((t) => {
     const opt = document.createElement("option");

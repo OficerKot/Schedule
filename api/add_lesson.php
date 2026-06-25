@@ -3,6 +3,8 @@ session_start();
 error_reporting(0);
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/db.php';
+    
 // Проверка прав администратора
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     echo json_encode(['success' => false, 'message' => 'Нет прав доступа']);
@@ -30,9 +32,6 @@ if (empty($date) || !$group_id || !$teacher_id || !$room_id || !$discipline_id |
 }
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=Schedule;charset=utf8mb4', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
     // Проверка конфликтов
     $stmt = $pdo->prepare("
         SELECT lc.card_id 

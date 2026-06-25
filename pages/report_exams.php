@@ -1,0 +1,40 @@
+<!-- pages/report_exams.php -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/general.css">
+    <link rel="stylesheet" href="../assets/css/reports.css">
+    <title>Зачеты и экзамены - Отчет</title>
+</head>
+<?php include "../includes/header.php"; ?>
+<body>
+    <div class="report-page">
+        <div class="report-header">
+            <h2>Зачеты и экзамены</h2>
+            <a href="reports.php" class="back-btn">← Назад к отчетам</a>
+        </div>
+        <div class="filters">
+            <div class="filter-group">
+                <label>Группа:</label>
+                <select id="groupSelect">
+                    <option value="1">Б9124-09.03.03-Пикд</option>
+                    <option value="2">Б9124-09.03.03-Пикр</option>
+                    <option value="3">Б9125-09.03.03-Пикд</option>
+                    <option value="4">Б9125-09.03.03-Пикр</option>
+                    <option value="5">Б9224-09.03.03-Пикд</option>
+                    <option value="6">Б9324-09.03.03-Пикд</option>
+                    <option value="7">Б9130-01.03.02-Кмд</option>
+                    <option value="8">Б9140-38.03.01-Эк</option>
+                </select>
+            </div>
+            <button id="loadReportBtn">Сформировать</button>
+        </div>
+        <div id="reportContent">
+            <div class="info">Выберите группу и нажмите "Сформировать"</div>
+        </div>
+    </div>
+    <script src="../assets/js/reports.js"></script>
+</body>
+</html>
