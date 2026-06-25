@@ -10,6 +10,7 @@
         <a href="#" id="loginLink" style="text-decoration: none; color: #007bff;"> Вход</a>
         <button id="adminPanelBtn" style="display: none; margin-left: 10px;"> Админ</button>
     </div>
+    <script type="module" src="<?= $basePath ?>assets/js/admin.js"></script>
 </header>
 
 <!-- Login Modal -->
