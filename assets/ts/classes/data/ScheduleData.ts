@@ -1,6 +1,6 @@
-import { Classroom } from "../model/Classroom.js";
+import { Classroom, parseClassroomType } from "../model/Classroom.js";
 import { Group } from "../model/Group.js";
-import { testLesson1, testLesson2 } from "../model/Lesson.js";
+import { Lesson, LessonType } from "../model/Lesson.js";
 import { StudyDay } from "../model/StudyDay.js";
 import { Teacher } from "../model/Teacher.js";
 import { FiltrationState } from "../viewmodel/FiltrationState.js";
@@ -14,30 +14,104 @@ export class ScheduleData {
   private teachers: Teacher[] = [];
   private classrooms: Classroom[] = [];
 
-  //Тут без фильтров, получаем все данные
-  getTeachersData(): Teacher[] {
-    return [];
+  //Запрос на получение всего списка учителей
+  async getTeachersData(): Promise<Teacher[]> {
+    const res = await fetch("api.php?action=teachers");
+    const data = await res.json();
+    this.teachers = data.map((t: any) => new Teacher(
+      t.teacher_id,
+      t.first_name,
+      t.middle_name || "",
+      t.last_name,
+      t.school || "",
+      t.position || "",
+      t.chair || "",
+      t.department || "",
+      t.degree,
+      t.title,
+    ));
+    return this.teachers;
   }
 
-  getGroupsData() {}
+  async getGroupsData(): Promise<Group[]> {
+    const res = await fetch("api.php?action=groups");
+    const data = await res.json();
+    this.groups = data.map((g: any) => new Group(g.name, g.students_count, g.group_id));
+    return this.groups;
+  }
 
-  getClassroomsData() {}
-  //-------------------------------------
+  async getClassroomsData(): Promise<Classroom[]> {
+    const res = await fetch("api.php?action=classrooms");
+    const data = await res.json();
+    this.classrooms = data.map((r: any) => new Classroom(
+      r.building || "",
+      r.room_number,
+      r.seats,
+      parseClassroomType(r.room_type),
+    ));
+    return this.classrooms;
+  }
 
-  getStudyDays(filters: FiltrationState): StudyDay[] {
-    //Отправляет SQL запрос с учётом фильтров
+  async getStudyDays(filters: FiltrationState, monday: Date): Promise<StudyDay[]> {
+    const params = new URLSearchParams({
+      action: "schedule",
+      monday: monday.toISOString().split("T")[0],
+    });
 
-    //Это убрать потом
-    const testDay1 = new StudyDay(
-      [testLesson1, testLesson2],
-      new Date("06-15-2026"),
-    );
-    const testDay2 = new StudyDay(
-      [testLesson1, testLesson1, testLesson2],
-      new Date("06-17-2026"),
-    );
-    const testDay3 = new StudyDay([testLesson1], new Date("06-19-2026"));
+    if (filters.teacher) params.set("teacher", String(filters.teacher.id));
+    if (filters.group) {
+      const g = filters.group;
+      const gid = (g as any).groupId || (g as any).group_id;
+      if (gid) params.set("group", String(gid));
+    }
+    if (filters.classroom) {
+      const c = filters.classroom;
+      params.set("classroom", (c.building || "") + (c.classroomNumber || ""));
+    }
 
-    return [testDay1, testDay2, testDay3];
+    const res = await fetch("api.php?" + params.toString());
+    const data = await res.json();
+
+    return data.map((day: any) => {
+      const lessons = day.lessons.map((l: any) => {
+        // Маппинг названий типов из БД в TS enum
+        const typeMap: Record<string, LessonType> = {
+          "Лекция": LessonType.LECTION,
+          "Практическое занятие": LessonType.PRACTICE,
+          "Лабораторная работа": LessonType.LAB,
+          "Зачёт": LessonType.CREDIT,
+          "Экзамен": LessonType.EXAM,
+          "Консультация": LessonType.CREDIT,
+        };
+        const lessonType = typeMap[l.lesson_type] || LessonType.PRACTICE;
+
+        return new Lesson(
+          l.lesson_name,
+          l.lesson_number,
+          lessonType,
+          new Teacher(
+            l.teacher.id,
+            l.teacher.first_name,
+            l.teacher.middle_name || "",
+            l.teacher.last_name,
+            "", "", "", "", undefined, undefined,
+          ),
+          new Classroom(
+            l.classroom.building,
+            l.classroom.classroom_number,
+            l.classroom.seats,
+            parseClassroomType(l.classroom.type),
+          ),
+          new Group(l.group.name, l.group.students_count),
+        );
+      });
+
+      return new StudyDay(lessons, this.parseDate(day.date));
+    });
+  }
+
+  private parseDate(dateStr: string): Date {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
   }
 }

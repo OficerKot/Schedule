@@ -31,39 +31,3 @@ export class Lesson {
   }
 }
 
-//Для проверки отображения карточек. Потом удалить
-export const testLesson1: Lesson = new Lesson(
-  "Аналитическая геометрия и компьютерная графика",
-  1,
-  LessonType.LECTION,
-  new Teacher(
-    101,
-    "Ирина",
-    "Алексеевна",
-    "Курочкина",
-    "ИМКТ",
-    "position",
-    "kafedra",
-    "Департамент математического и компьютерного моделирования",
-  ),
-  new Classroom("D", "738", 150, ClassroomType.LECTURE),
-  new Group("Б9124-09.03.03 пикд", 28),
-);
-
-export const testLesson2: Lesson = new Lesson(
-  "Математический анализ",
-  1,
-  LessonType.LECTION,
-  new Teacher(
-    102,
-    "Юрий",
-    "Александрович",
-    "Клевчихин",
-    "ИМКТ",
-    "position",
-    "kafedra",
-    "Департамент математики",
-  ),
-  new Classroom("D", "738", 150, ClassroomType.LECTURE),
-  new Group("Б9124-09.03.03 пикд", 28),
-);

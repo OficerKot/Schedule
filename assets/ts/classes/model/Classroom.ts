@@ -1,8 +1,12 @@
 ﻿export enum ClassroomType {
-  LECTURE = "лекционная",
-  COMPUTER = "компьютерный класс",
-  LAB = "лаборатория",
-  SEMINAR = "семинарская",
+  LECTURE = "lecture",
+  COMPUTER = "computer",
+  LAB = "lab",
+  SEMINAR = "practical",
+}
+
+export function parseClassroomType(value: string): ClassroomType {
+  return ClassroomType[value as keyof typeof ClassroomType] || ClassroomType.LECTURE;
 }
 
 /** Аудитория */
