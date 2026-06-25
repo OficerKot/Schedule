@@ -1,5 +1,11 @@
 <header>
+	<?php
+	// Определяем базовый путь в зависимости от текущей страницы
+	$basePath = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../' : '';
+	?>
 	<div class="headerBtnsContainer">
+		<a href="<?= $basePath ?>index.php" style="text-decoration: none;">Расписание</a>
+		<a href="<?= $basePath ?>pages/teachersInfo.php" style="text-decoration: none;">Преподаватели</a>
 		<a href="../index.php" style="text-decoration: none;">Расписание</a>
 		<a href="../pages/teachersInfo.php" style="text-decoration: none;">Преподаватели</a>
 		<a href="../pages/reports.php" style="text-decoration: none;" class="active">Отчеты</a>

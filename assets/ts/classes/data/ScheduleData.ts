@@ -16,7 +16,7 @@ export class ScheduleData {
 
   //Запрос на получение всего списка учителей
   async getTeachersData(): Promise<Teacher[]> {
-    const res = await fetch("api.php?action=teachers");
+    const res = await fetch("../api/get_teachers.php");
     const data = await res.json();
     this.teachers = data.map((t: any) => new Teacher(
       t.teacher_id,
@@ -34,14 +34,14 @@ export class ScheduleData {
   }
 
   async getGroupsData(): Promise<Group[]> {
-    const res = await fetch("api.php?action=groups");
+    const res = await fetch("../api/get_groups.php");
     const data = await res.json();
     this.groups = data.map((g: any) => new Group(g.name, g.students_count, g.group_id));
     return this.groups;
   }
 
   async getClassroomsData(): Promise<Classroom[]> {
-    const res = await fetch("api.php?action=classrooms");
+    const res = await fetch("../api/get_rooms.php");
     const data = await res.json();
     this.classrooms = data.map((r: any) => new Classroom(
       r.building || "",
@@ -70,10 +70,8 @@ export class ScheduleData {
       return new Group(data.name, data.students_count, data.group_id);
   }
   async getStudyDays(filters: FiltrationState, monday: Date): Promise<StudyDay[]> {
-    const params = new URLSearchParams({
-      action: "schedule",
-      monday: monday.toISOString().split("T")[0],
-    });
+    const params = new URLSearchParams();
+    params.set("monday", monday.toISOString().split("T")[0]);
 
     if (filters.teacher) params.set("teacher", String(filters.teacher.id));
     if (filters.group) {
@@ -86,11 +84,21 @@ export class ScheduleData {
       params.set("classroom", (c.building || "") + (c.classroomNumber || ""));
     }
 
-    const res = await fetch("api.php?" + params.toString());
+    const res = await fetch("../api/get_schedule.php?" + params.toString());
     const data = await res.json();
 
-    return data.map((day: any) => {
-      const lessons = day.lessons.map((l: any) => {
+    // Группируем занятия по дате
+    const daysMap = new Map<string, any[]>();
+    data.forEach((lesson: any) => {
+      const dateKey = lesson.semester_date;
+      if (!daysMap.has(dateKey)) {
+        daysMap.set(dateKey, []);
+      }
+      daysMap.get(dateKey)!.push(lesson);
+    });
+
+    return Array.from(daysMap.entries()).map(([dateStr, lessons]) => {
+      const parsedLessons = lessons.map((l: any) => {
         // Маппинг названий типов из БД в TS enum
         const typeMap: Record<string, LessonType> = {
           "Лекция": LessonType.LECTION,
@@ -103,27 +111,27 @@ export class ScheduleData {
         const lessonType = typeMap[l.lesson_type] || LessonType.PRACTICE;
 
         return new Lesson(
-          l.lesson_name,
-          l.lesson_number,
+          l.discipline_name,
+          parseInt(l.period_number),
           lessonType,
           new Teacher(
-            l.teacher.id,
-            l.teacher.first_name,
-            l.teacher.middle_name || "",
-            l.teacher.last_name,
+            l.teacher_id,
+            l.teacher_name.split(' ')[1] || "",
+            l.teacher_name.split(' ')[2] || "",
+            l.teacher_name.split(' ')[0] || "",
             "", "", "", "", undefined, undefined,
           ),
           new Classroom(
-            l.classroom.building,
-            l.classroom.classroom_number,
-            l.classroom.seats,
-            parseClassroomType(l.classroom.type),
+            l.building,
+            l.room_number,
+            parseInt(l.seats) || 0,
+            parseClassroomType(l.room_type),
           ),
-          new Group(l.group.name, l.group.students_count),
+          new Group(l.group_name, 0),
         );
       });
 
-      return new StudyDay(lessons, this.parseDate(day.date));
+      return new StudyDay(parsedLessons, this.parseDate(dateStr));
     });
   }
 

@@ -551,7 +551,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     </div>
 
     <script>
-        const API_BASE = '/api/';
+        const API_BASE = '../api/';
         
         function showSection(section, btn) {
             document.querySelectorAll('.adminSection').forEach(el => el.style.display = 'none');
