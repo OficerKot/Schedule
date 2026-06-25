@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Июн 19 2026 г., 12:40
--- Версия сервера: 8.0.30
+-- Время создания: Июн 25 2026 г., 18:51
+-- Версия сервера: 5.6.51
 -- Версия PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -28,10 +28,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `academic_groups` (
-  `academic_group_id` int NOT NULL,
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `direction` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Направление подготовки',
-  `course` tinyint DEFAULT NULL COMMENT 'Курс (1-6)'
+  `academic_group_id` int(11) NOT NULL,
+  `code` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `direction` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Направление подготовки',
+  `course` tinyint(4) DEFAULT NULL COMMENT 'Курс (1-6)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -55,7 +55,7 @@ INSERT INTO `academic_groups` (`academic_group_id`, `code`, `direction`, `course
 CREATE TABLE `building_distances` (
   `from_building` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `to_building` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `walk_minutes` tinyint NOT NULL
+  `walk_minutes` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -120,7 +120,7 @@ INSERT INTO `building_distances` (`from_building`, `to_building`, `walk_minutes`
 --
 
 CREATE TABLE `calendar_days` (
-  `day_id` int NOT NULL,
+  `day_id` int(11) NOT NULL,
   `day_date` date NOT NULL,
   `is_working` tinyint(1) DEFAULT '1',
   `is_holiday` tinyint(1) DEFAULT '0'
@@ -292,10 +292,10 @@ INSERT INTO `calendar_days` (`day_id`, `day_date`, `is_working`, `is_holiday`) V
 --
 
 CREATE TABLE `departments` (
-  `department_id` int NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `parent_id` int DEFAULT NULL,
-  `level` enum('university','school','chair') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'chair'
+  `department_id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `level` enum('university','school','chair') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'chair'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -317,8 +317,8 @@ INSERT INTO `departments` (`department_id`, `name`, `parent_id`, `level`) VALUES
 --
 
 CREATE TABLE `disciplines` (
-  `discipline_id` int NOT NULL,
-  `discipline_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `discipline_id` int(11) NOT NULL,
+  `discipline_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -344,11 +344,11 @@ INSERT INTO `disciplines` (`discipline_id`, `discipline_name`) VALUES
 --
 
 CREATE TABLE `discipline_hours` (
-  `discipline_id` int NOT NULL,
-  `lecture_hours` int DEFAULT '0',
-  `practice_hours` int DEFAULT '0',
-  `lab_hours` int DEFAULT '0',
-  `assessment_type` enum('credit','exam','none') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'none'
+  `discipline_id` int(11) NOT NULL,
+  `lecture_hours` int(11) DEFAULT '0',
+  `practice_hours` int(11) DEFAULT '0',
+  `lab_hours` int(11) DEFAULT '0',
+  `assessment_type` enum('credit','exam','none') COLLATE utf8mb4_unicode_ci DEFAULT 'none'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -374,9 +374,9 @@ INSERT INTO `discipline_hours` (`discipline_id`, `lecture_hours`, `practice_hour
 --
 
 CREATE TABLE `groups` (
-  `group_id` int NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Уникальное название (напр. Б9124-09.03.03-Пикд)',
-  `students_count` int NOT NULL
+  `group_id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Уникальное название (напр. Б9124-09.03.03-Пикд)',
+  `students_count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -400,8 +400,8 @@ INSERT INTO `groups` (`group_id`, `name`, `students_count`) VALUES
 --
 
 CREATE TABLE `group_academic_link` (
-  `group_id` int NOT NULL,
-  `academic_group_id` int NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `academic_group_id` int(11) NOT NULL,
   `is_main` tinyint(1) DEFAULT '0' COMMENT 'Основная академическая группа'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -426,15 +426,15 @@ INSERT INTO `group_academic_link` (`group_id`, `academic_group_id`, `is_main`) V
 --
 
 CREATE TABLE `lesson_card` (
-  `card_id` int NOT NULL,
+  `card_id` int(11) NOT NULL,
   `semester_date` date NOT NULL COMMENT 'Дата начала семестра',
-  `week_type` enum('even','odd','all') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'all' COMMENT 'Чётная/нечётная/любая неделя',
-  `discipline_id` int NOT NULL,
-  `lesson_type_id` int NOT NULL,
-  `group_id` int NOT NULL,
-  `teacher_id` int NOT NULL,
-  `room_id` int NOT NULL,
-  `period_id` int NOT NULL
+  `week_type` enum('even','odd','all') COLLATE utf8mb4_unicode_ci DEFAULT 'all' COMMENT 'Чётная/нечётная/любая неделя',
+  `discipline_id` int(11) NOT NULL,
+  `lesson_type_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `room_id` int(11) NOT NULL,
+  `period_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -442,6 +442,7 @@ CREATE TABLE `lesson_card` (
 --
 
 INSERT INTO `lesson_card` (`card_id`, `semester_date`, `week_type`, `discipline_id`, `lesson_type_id`, `group_id`, `teacher_id`, `room_id`, `period_id`) VALUES
+(1, '2026-09-06', 'all', 4, 2, 7, 5, 6, 2),
 (19, '2026-09-01', 'even', 1, 1, 1, 1, 3, 1),
 (20, '2026-09-01', 'even', 3, 3, 1, 3, 5, 2),
 (21, '2026-09-02', 'even', 2, 1, 1, 2, 1, 1),
@@ -490,7 +491,11 @@ INSERT INTO `lesson_card` (`card_id`, `semester_date`, `week_type`, `discipline_
 (64, '2026-09-10', 'even', 4, 3, 3, 4, 5, 2),
 (65, '2026-09-11', 'all', 6, 1, 3, 6, 7, 3),
 (66, '2026-09-11', 'even', 10, 1, 3, 6, 1, 4),
-(67, '2026-06-19', 'all', 2, 2, 1, 1, 2, 3);
+(67, '2026-09-06', 'all', 3, 1, 1, 1, 8, 6),
+(68, '2026-09-06', 'all', 9, 5, 2, 5, 8, 3),
+(69, '2026-09-07', 'all', 2, 1, 7, 5, 6, 1),
+(70, '2026-09-07', 'all', 7, 2, 1, 4, 11, 1),
+(71, '2026-09-07', 'all', 5, 1, 8, 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -499,9 +504,9 @@ INSERT INTO `lesson_card` (`card_id`, `semester_date`, `week_type`, `discipline_
 --
 
 CREATE TABLE `lesson_types` (
-  `lesson_type_id` int NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `duration_minutes` int DEFAULT NULL COMMENT 'Длительность в минутах'
+  `lesson_type_id` int(11) NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `duration_minutes` int(11) DEFAULT NULL COMMENT 'Длительность в минутах'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -523,11 +528,11 @@ INSERT INTO `lesson_types` (`lesson_type_id`, `name`, `duration_minutes`) VALUES
 --
 
 CREATE TABLE `rooms` (
-  `room_id` int NOT NULL,
-  `building` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Корпус',
-  `room_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Номер аудитории',
-  `room_type` enum('lecture','practical','lab','computer') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `seats` int NOT NULL
+  `room_id` int(11) NOT NULL,
+  `building` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Корпус',
+  `room_number` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Номер аудитории',
+  `room_type` enum('lecture','practical','lab','computer') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seats` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -550,37 +555,21 @@ INSERT INTO `rooms` (`room_id`, `building`, `room_number`, `room_type`, `seats`)
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `schedule_changes`
---
-
-CREATE TABLE `schedule_changes` (
-  `change_id` int NOT NULL,
-  `card_id` int DEFAULT NULL,
-  `changed_by` int NOT NULL,
-  `changed_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `action` enum('create','move','delete') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `old_data` json DEFAULT NULL,
-  `new_data` json DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `teachers`
 --
 
 CREATE TABLE `teachers` (
-  `teacher_id` int NOT NULL,
-  `first_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `middle_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `school` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `department` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `chair` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `degree` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Учёная степень',
-  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Учёное звание',
-  `position` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Должность',
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `teacher_id` int(11) NOT NULL,
+  `first_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `middle_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `school` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `department` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `chair` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `degree` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Учёная степень',
+  `title` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Учёное звание',
+  `position` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Должность',
+  `type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -603,11 +592,11 @@ INSERT INTO `teachers` (`teacher_id`, `first_name`, `middle_name`, `last_name`, 
 --
 
 CREATE TABLE `teacher_preferences` (
-  `preference_id` int NOT NULL,
-  `teacher_id` int NOT NULL,
-  `day_of_week` tinyint DEFAULT NULL COMMENT '1=пн, ..., 6=сб',
-  `period` tinyint DEFAULT NULL COMMENT '1-8',
-  `preference_type` enum('prefer','avoid') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'prefer'
+  `preference_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL,
+  `day_of_week` tinyint(4) DEFAULT NULL COMMENT '1=пн, ..., 6=сб',
+  `period` tinyint(4) DEFAULT NULL COMMENT '1-8',
+  `preference_type` enum('prefer','avoid') COLLATE utf8mb4_unicode_ci DEFAULT 'prefer'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -627,9 +616,9 @@ INSERT INTO `teacher_preferences` (`preference_id`, `teacher_id`, `day_of_week`,
 --
 
 CREATE TABLE `time_periods` (
-  `period_id` int NOT NULL,
-  `period_number` tinyint NOT NULL COMMENT 'Номер пары (1-8)',
-  `time_range` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Время (напр. 8:30-10:00)'
+  `period_id` int(11) NOT NULL,
+  `period_number` tinyint(4) NOT NULL COMMENT 'Номер пары (1-8)',
+  `time_range` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Время (напр. 8:30-10:00)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -637,6 +626,14 @@ CREATE TABLE `time_periods` (
 --
 
 INSERT INTO `time_periods` (`period_id`, `period_number`, `time_range`) VALUES
+(1, 1, '8:30-10:00'),
+(2, 2, '10:10-11:40'),
+(3, 3, '11:50-13:20'),
+(4, 4, '13:30-15:00'),
+(5, 5, '15:10-16:40'),
+(6, 6, '16:50-18:20'),
+(7, 7, '18:30-19:00'),
+(8, 8, '19:10-20:40'),
 (1, 1, '8:30-10:00'),
 (2, 2, '10:10-11:40'),
 (3, 3, '11:50-13:20'),
@@ -653,12 +650,12 @@ INSERT INTO `time_periods` (`period_id`, `period_number`, `time_range`) VALUES
 --
 
 CREATE TABLE `users` (
-  `user_id` int NOT NULL,
-  `login` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('admin','dispatcher','teacher','student') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `teacher_id` int DEFAULT NULL,
-  `group_id` int DEFAULT NULL
+  `user_id` int(11) NOT NULL,
+  `login` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('admin','dispatcher','teacher','student') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `teacher_id` int(11) DEFAULT NULL,
+  `group_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -666,7 +663,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `login`, `password_hash`, `role`, `teacher_id`, `group_id`) VALUES
-(1, 'admin', '$2y$10$.3pObepSTRnOrbyhNyCw4uFNNbP0Gt/aSGBEwMlhS5FDbsNpoyYe2', 'admin', NULL, NULL);
+(1, 'admin', '$2y$10$.3pObepSTRnOrbyhNyCw4uFNNbP0Gt/aSGBEwMlhS5FDbsNpoyYe2', 'admin', NULL, NULL),
+(2, 'student1', '$2y$10$.3pObepSTRnOrbyhNyCw4uFNNbP0Gt/aSGBEwMlhS5FDbsNpoyYe2', 'student', NULL, 2);
 
 --
 -- Индексы сохранённых таблиц
@@ -751,13 +749,6 @@ ALTER TABLE `rooms`
   ADD PRIMARY KEY (`room_id`);
 
 --
--- Индексы таблицы `schedule_changes`
---
-ALTER TABLE `schedule_changes`
-  ADD PRIMARY KEY (`change_id`),
-  ADD KEY `card_id` (`card_id`);
-
---
 -- Индексы таблицы `teachers`
 --
 ALTER TABLE `teachers`
@@ -771,155 +762,14 @@ ALTER TABLE `teacher_preferences`
   ADD KEY `teacher_id` (`teacher_id`);
 
 --
--- Индексы таблицы `time_periods`
---
-ALTER TABLE `time_periods`
-  ADD PRIMARY KEY (`period_id`),
-  ADD UNIQUE KEY `period_number` (`period_number`);
-
---
--- Индексы таблицы `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `login` (`login`),
-  ADD KEY `teacher_id` (`teacher_id`),
-  ADD KEY `group_id` (`group_id`);
-
---
 -- AUTO_INCREMENT для сохранённых таблиц
 --
-
---
--- AUTO_INCREMENT для таблицы `academic_groups`
---
-ALTER TABLE `academic_groups`
-  MODIFY `academic_group_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT для таблицы `calendar_days`
---
-ALTER TABLE `calendar_days`
-  MODIFY `day_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
-
---
--- AUTO_INCREMENT для таблицы `departments`
---
-ALTER TABLE `departments`
-  MODIFY `department_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT для таблицы `disciplines`
---
-ALTER TABLE `disciplines`
-  MODIFY `discipline_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT для таблицы `groups`
---
-ALTER TABLE `groups`
-  MODIFY `group_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `lesson_card`
 --
 ALTER TABLE `lesson_card`
-  MODIFY `card_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
-
---
--- AUTO_INCREMENT для таблицы `lesson_types`
---
-ALTER TABLE `lesson_types`
-  MODIFY `lesson_type_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT для таблицы `rooms`
---
-ALTER TABLE `rooms`
-  MODIFY `room_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
--- AUTO_INCREMENT для таблицы `schedule_changes`
---
-ALTER TABLE `schedule_changes`
-  MODIFY `change_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT для таблицы `teachers`
---
-ALTER TABLE `teachers`
-  MODIFY `teacher_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT для таблицы `teacher_preferences`
---
-ALTER TABLE `teacher_preferences`
-  MODIFY `preference_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT для таблицы `time_periods`
---
-ALTER TABLE `time_periods`
-  MODIFY `period_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT для таблицы `users`
---
-ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- Ограничения внешнего ключа сохраненных таблиц
---
-
---
--- Ограничения внешнего ключа таблицы `departments`
---
-ALTER TABLE `departments`
-  ADD CONSTRAINT `departments_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `departments` (`department_id`);
-
---
--- Ограничения внешнего ключа таблицы `discipline_hours`
---
-ALTER TABLE `discipline_hours`
-  ADD CONSTRAINT `discipline_hours_ibfk_1` FOREIGN KEY (`discipline_id`) REFERENCES `disciplines` (`discipline_id`);
-
---
--- Ограничения внешнего ключа таблицы `group_academic_link`
---
-ALTER TABLE `group_academic_link`
-  ADD CONSTRAINT `group_academic_link_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`),
-  ADD CONSTRAINT `group_academic_link_ibfk_2` FOREIGN KEY (`academic_group_id`) REFERENCES `academic_groups` (`academic_group_id`);
-
---
--- Ограничения внешнего ключа таблицы `lesson_card`
---
-ALTER TABLE `lesson_card`
-  ADD CONSTRAINT `lesson_card_ibfk_1` FOREIGN KEY (`discipline_id`) REFERENCES `disciplines` (`discipline_id`),
-  ADD CONSTRAINT `lesson_card_ibfk_2` FOREIGN KEY (`lesson_type_id`) REFERENCES `lesson_types` (`lesson_type_id`),
-  ADD CONSTRAINT `lesson_card_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`),
-  ADD CONSTRAINT `lesson_card_ibfk_4` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`),
-  ADD CONSTRAINT `lesson_card_ibfk_5` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
-  ADD CONSTRAINT `lesson_card_ibfk_6` FOREIGN KEY (`period_id`) REFERENCES `time_periods` (`period_id`);
-
---
--- Ограничения внешнего ключа таблицы `schedule_changes`
---
-ALTER TABLE `schedule_changes`
-  ADD CONSTRAINT `schedule_changes_ibfk_1` FOREIGN KEY (`card_id`) REFERENCES `lesson_card` (`card_id`);
-
---
--- Ограничения внешнего ключа таблицы `teacher_preferences`
---
-ALTER TABLE `teacher_preferences`
-  ADD CONSTRAINT `teacher_preferences_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`);
-
---
--- Ограничения внешнего ключа таблицы `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`),
-  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`);
+  MODIFY `card_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
