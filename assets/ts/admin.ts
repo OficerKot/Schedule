@@ -1,50 +1,53 @@
 export {};
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const loginLink = document.getElementById('loginLink') as HTMLAnchorElement;
     const loginModal = document.getElementById('loginModal') as HTMLElement;
     const closeBtn = document.querySelector('.close-modal') as HTMLElement;
     const loginForm = document.getElementById('loginForm') as HTMLFormElement;
     const loginMessage = document.getElementById('loginMessage') as HTMLElement;
-    const adminPanelBtn = document.getElementById('adminPanelBtn') as HTMLElement;
-
-    const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
-    const isAdminPage = window.location.pathname.includes('admin.php');
     const headerContainer = document.querySelector('.headerBtnsContainer');
-    
-    console.log('isLoggedIn:', isLoggedIn, 'isAdminPage:', isAdminPage);
-    
-    if (isLoggedIn) {
-        // Авторизованный пользователь
-        if (loginLink) loginLink.style.display = 'none';
-        
-        // adminPanelBtn видна только если мы не на странице админ-панели
-        if (adminPanelBtn) {
-            adminPanelBtn.style.display = isAdminPage ? 'none' : 'inline-block';
+
+    const apiBase = window.location.pathname.includes('/pages/')
+        ? '../api/'
+        : 'api/';
+
+    let isLoggedIn = false;
+
+    try {
+        const sessionResponse = await fetch(apiBase + 'get_session.php');
+        const session = await sessionResponse.json();
+        isLoggedIn = session.logged_in === true;
+        if (isLoggedIn && session.role) {
+            localStorage.setItem('userRole', session.role);
+        } else {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('isAdminLoggedIn');
         }
-        
-        // Создаём кнопку "Выйти"
+    } catch {
+        isLoggedIn = localStorage.getItem('userRole') !== null;
+    }
+
+    if (isLoggedIn) {
+        if (loginLink) loginLink.style.display = 'none';
+
         const logoutBtn = document.createElement('button');
         logoutBtn.id = 'logoutBtn';
         logoutBtn.textContent = 'Выйти';
         logoutBtn.style.cssText = 'margin-left: 10px; padding: 8px 15px; background: #dc3545; color: #fff; border: none; border-radius: 4px; cursor: pointer;';
         logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('userRole');
             localStorage.removeItem('isAdminLoggedIn');
-            window.location.href = '../api/logout.php';
+            window.location.href = apiBase + 'logout.php';
         });
-        
-        // Всегда добавляем кнопку в header
+
         if (headerContainer) {
             headerContainer.appendChild(logoutBtn);
-            console.log('Добавлена кнопка Выйти');
         }
     } else {
-        // Неавторизованный пользователь
         if (loginLink) loginLink.style.display = 'inline-block';
-        if (adminPanelBtn) adminPanelBtn.style.display = 'none';
     }
 
-    // Обработчики модального окна входа (только если элементы существуют)
     if (loginLink && loginModal && closeBtn && loginForm && loginMessage) {
         loginLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -67,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
 
             try {
-                const response = await fetch('../api/login.php', {
+                const response = await fetch(apiBase + 'login.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login, password })
@@ -75,25 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (data.success) {
-                    localStorage.setItem('isAdminLoggedIn', 'true');
+                    localStorage.setItem('userRole', data.role);
+                    localStorage.removeItem('isAdminLoggedIn');
                     loginModal.style.display = 'none';
                     loginLink.style.display = 'none';
-                    adminPanelBtn.style.display = 'inline-block';
                     loginMessage.textContent = '';
-                    alert('Добро пожаловать, администратор!');
                     window.location.reload();
                 } else {
                     loginMessage.textContent = data.message;
                     loginMessage.className = 'message error';
                 }
-            } catch (error) {
+            } catch {
                 loginMessage.textContent = 'Ошибка соединения с сервером';
                 loginMessage.className = 'message error';
             }
-        });
-
-        adminPanelBtn.addEventListener('click', () => {
-            window.location.href = '../pages/admin.php';
         });
     }
 });

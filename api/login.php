@@ -35,11 +35,7 @@ if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['role'] = $user['role'];
     $_SESSION['login_time'] = time();
     
-    if ($user['role'] === 'admin') {
-        echo json_encode(['success' => true, 'role' => 'admin']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'У вас нет прав администратора']);
-    }
+    echo json_encode(['success' => true, 'role' => $user['role']]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Неверный логин или пароль']);
 }
