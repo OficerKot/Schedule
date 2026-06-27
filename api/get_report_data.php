@@ -1,26 +1,27 @@
 <?php
 // api/get_report_data.php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Запрещаем вывод ошибок в ответ (чтобы не ломать JSON)
+ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/db.php';
 
-$reportType = $_GET['type'] ?? '';
-$groupId = (int)($_GET['group_id'] ?? 0);
-$weekNumber = (int)($_GET['week'] ?? 1);
-$semesterId = (int)($_GET['semester_id'] ?? 0);
+try {
+    $reportType = $_GET['type'] ?? '';
+    $groupId = (int)($_GET['group_id'] ?? 0);
+    $weekNumber = (int)($_GET['week'] ?? 1);
+    $semesterId = (int)($_GET['semester_id'] ?? 0);
 
-$response = ['success' => false, 'data' => []];
+    $response = ['success' => false, 'data' => []];
 
 switch ($reportType) {
     case 'group_schedule':
         $sql = "SELECT 
                     DATE_FORMAT(lc.semester_date, '%a') as day,
-                    tp.period_number as period,
+                    MAX(tp.period_number) as period,
                     d.discipline_name,
                     lt.name as lesson_type,
                     CONCAT(t.last_name, ' ', t.first_name) as teacher,
@@ -33,6 +34,8 @@ switch ($reportType) {
                 JOIN rooms r ON lc.room_id = r.room_id
                 JOIN time_periods tp ON lc.period_id = tp.period_id
                 WHERE lc.group_id = ?
+                GROUP BY lc.card_id
+                ORDER BY lc.semester_date, period
                 LIMIT 100";
 
         $stmt = $pdo->prepare($sql);
@@ -44,11 +47,11 @@ switch ($reportType) {
                 [
                     'day' => 'ПН',
                     'period' => '1',
-                    'discipline_name' => 'Тестовая дисциплина',
-                    'lesson_type' => 'Лекция',
-                    'teacher' => 'Тестов Преподаватель',
-                    'room_number' => '101',
-                    'room_type' => 'Лекционная'
+                    'discipline_name' => 'Нет данных',
+                    'lesson_type' => '-',
+                    'teacher' => '-',
+                    'room_number' => '-',
+                    'room_type' => '-'
                 ]
             ];
         }
@@ -88,8 +91,9 @@ switch ($reportType) {
         $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
 
         // Вычисляем даты для выбранной недели
-        $baseDate = new DateTime('2026-09-01');
+        $baseDate = new DateTime('now');
         $monday = clone $baseDate;
+        $monday->modify('monday this week');
         $monday->modify('+' . ($weekNumber - 1) . ' weeks');
         $sunday = clone $monday;
         $sunday->modify('+6 days');
@@ -97,15 +101,16 @@ switch ($reportType) {
         $sql = "SELECT 
                     g.name as group_name,
                     DATE_FORMAT(lc.semester_date, '%a') as day,
-                    tp.period_number as period,
+                    MAX(tp.period_number) as period,
                     d.discipline_name
                 FROM lesson_card lc
                 JOIN `groups` g ON lc.group_id = g.group_id
                 JOIN disciplines d ON lc.discipline_id = d.discipline_id
                 JOIN time_periods tp ON lc.period_id = tp.period_id
                 WHERE lc.group_id IN ($placeholders)
-                AND lc.semester_date BETWEEN ? AND ?
-                ORDER BY g.group_id, lc.semester_date, tp.period_number";
+                  AND lc.semester_date BETWEEN ? AND ?
+                GROUP BY lc.card_id
+                ORDER BY g.group_id, lc.semester_date, period";
 
         $params = array_merge($groupIds, [$monday->format('Y-m-d'), $sunday->format('Y-m-d')]);
         $stmt = $pdo->prepare($sql);
@@ -235,13 +240,12 @@ switch ($reportType) {
         $byDay = [];
         $days = ['ПН','ВТ','СР','ЧТ','ПТ','СБ'];
         foreach ($days as $index => $dayName) {
-            $dayNum = $index + 1;
+            // Для демо используем случайное распределение или просто считаем занятость по карточкам
             $sqlDay = "SELECT COUNT(DISTINCT lc.room_id) FROM lesson_card lc 
-                       JOIN rooms r ON lc.room_id = r.room_id 
-                       WHERE DAYOFWEEK(lc.semester_date) = ?";
-            $params = [$dayNum + 1];
+                       JOIN rooms r ON lc.room_id = r.room_id";
+            $params = [];
             if ($building) {
-                $sqlDay .= " AND r.building = ?";
+                $sqlDay .= " WHERE r.building = ?";
                 $params[] = $building;
             }
             $stmt = $pdo->prepare($sqlDay);
@@ -280,6 +284,15 @@ switch ($reportType) {
 
     default:
         $response = ['success' => false, 'message' => 'Неизвестный тип отчета'];
+        break;
 }
 
 echo json_encode($response, JSON_UNESCAPED_UNICODE);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Ошибка сервера: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
+}

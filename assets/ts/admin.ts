@@ -13,11 +13,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         : 'api/';
 
     let isLoggedIn = false;
+    let userRole = '';
 
     try {
         const sessionResponse = await fetch(apiBase + 'get_session.php');
         const session = await sessionResponse.json();
         isLoggedIn = session.logged_in === true;
+        userRole = session.role || '';
         if (isLoggedIn && session.role) {
             localStorage.setItem('userRole', session.role);
         } else {
@@ -26,10 +28,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch {
         isLoggedIn = localStorage.getItem('userRole') !== null;
+        userRole = localStorage.getItem('userRole') || '';
+    }
+
+    const adminBtn = document.getElementById('adminPanelBtn');
+
+    if (adminBtn) {
+        adminBtn.addEventListener('click', () => {
+            const basePath = window.location.pathname.includes('/pages/') ? '' : 'pages/';
+            window.location.href = basePath + 'admin.php';
+        });
     }
 
     if (isLoggedIn) {
         if (loginLink) loginLink.style.display = 'none';
+        if (adminBtn) adminBtn.style.display = 'inline-block';
 
         const logoutBtn = document.createElement('button');
         logoutBtn.id = 'logoutBtn';
@@ -38,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('userRole');
             localStorage.removeItem('isAdminLoggedIn');
+            if (adminBtn) adminBtn.style.display = 'none';
             window.location.href = apiBase + 'logout.php';
         });
 
@@ -46,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } else {
         if (loginLink) loginLink.style.display = 'inline-block';
+        if (adminBtn) adminBtn.style.display = 'none';
     }
 
     if (loginLink && loginModal && closeBtn && loginForm && loginMessage) {
@@ -82,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     localStorage.removeItem('isAdminLoggedIn');
                     loginModal.style.display = 'none';
                     loginLink.style.display = 'none';
+                    if (adminBtn) adminBtn.style.display = 'inline-block';
                     loginMessage.textContent = '';
                     window.location.reload();
                 } else {

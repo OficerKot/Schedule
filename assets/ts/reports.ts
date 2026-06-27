@@ -61,7 +61,12 @@ class ReportsController {
   private buildingSelect: HTMLSelectElement | null;
   private reportType: string;
 
+  private apiBase: string;
+
   constructor() {
+    this.apiBase = window.location.pathname.includes('/pages/')
+      ? '../api/'
+      : 'api/';
     this.loadBtn = document.getElementById("loadReportBtn");
     this.content = document.getElementById("reportContent");
     this.groupSelect = document.getElementById(
@@ -169,12 +174,26 @@ class ReportsController {
       params.set("group_ids", groupIds.join(","));
     }
 
-    fetch(`../api/get_report_data.php?${params.toString()}`)
-      .then((response) => {
+    fetch(`${this.apiBase}get_report_data.php?${params.toString()}`)
+      .then(async (response) => {
+        console.log('Report API response status:', response.status);
+        console.log('Content-Type:', response.headers.get('content-type'));
+        
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+          const text = await response.text();
+          console.error('API Error HTML:', text.substring(0, 500));
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        return response.json();
+        
+        const text = await response.text();
+        console.log('API Response:', text.substring(0, 200));
+        
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('JSON parse failed. Response:', text.substring(0, 200));
+          throw new Error(`Неверный формат ответа от сервера. Проверьте консоль (F12)`);
+        }
       })
       .then((result: any) => {
         if (result.success) {
